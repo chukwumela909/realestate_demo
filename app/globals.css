@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #f6f2ec;
+  --color-canvas-deep: #ede7dd;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #5c564e;
+  --color-ink-muted: #8a8278;
+  --color-hairline: #d9d2c6;
+  --color-hairline-strong: #b8af9f;
+  --color-accent: #a6442c;
+  --color-accent-soft: #c25a3f;
+
+  --font-serif: var(--font-serif), "Times New Roman", serif;
+  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono), "Courier New", monospace;
+
+  --ease-maison: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-canvas);
+}
+
+/* === motion primitives === */
+
+@keyframes maison-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes maison-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes maison-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes maison-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes maison-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-spin-slow {
+  animation: maison-spin var(--ring-duration, 18s) linear infinite;
+  transition: animation-duration 800ms var(--ease-maison);
+}
+
+.animate-pulse-soft {
+  animation: maison-pulse 2.4s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: maison-fade-up 0.8s var(--ease-maison) both;
+}
+
+.animate-scale-in {
+  animation: maison-scale-in 0.32s var(--ease-maison) both;
+}
+
+.animate-fade-in {
+  animation: maison-fade-in 0.4s var(--ease-maison) both;
+}
+
+/* === reveal-on-scroll === */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 800ms var(--ease-maison),
+    transform 800ms var(--ease-maison);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === hairline draw-in === */
+
+.hairline-draw {
+  position: relative;
+}
+.hairline-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 600ms var(--ease-maison);
+}
+.group:hover .hairline-draw::after,
+.hairline-draw.is-active::after {
+  transform: scaleX(1);
+}
+
+/* === arrow slide-in === */
+
+.arrow-in {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 400ms var(--ease-maison),
+    transform 400ms var(--ease-maison);
+}
+.group:hover .arrow-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* === card image dwell === */
+
+.card-image {
+  transition: transform 1400ms var(--ease-maison);
+}
+.group:hover .card-image {
+  transform: scale(1.04);
+}
+
+/* === caption brighten === */
+
+.caption-dim {
+  opacity: 0.78;
+  transition: opacity 600ms var(--ease-maison);
+}
+.group:hover .caption-dim {
+  opacity: 1;
+}
+
+/* === scroll utilities === */
+
+@utility no-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+
+  &::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-corner {
+    display: none !important;
+    background: transparent !important;
+  }
+}
+
+/* === reduced motion === */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

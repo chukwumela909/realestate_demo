@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id          String   @id
+  name        String
+  caption     String
+  price       String
+  location    String
+  moods       String   // JSON array of mood strings
+  status      String   @default("available") // available | under_offer | reserved | sold
+  available   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  images      PropertyImage[]
+  interests   Interest[]
+}
+
+model PropertyImage {
+  id          String   @id @default(cuid())
+  propertyId  String
+  url         String
+  alt         String?
+  order       Int      @default(0)
+  isPrimary   Boolean  @default(false)
+
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+}
+
+model Session {
+  id          String   @id // cookie value
+  name        String?
+  email       String?
+  phone       String?
+  isLead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages    Message[]
+  interests   Interest[]
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  sessionId   String
+  role        String   // 'user' | 'assistant' | 'tool'
+  content     String   // text content (assistant prose, user input, or tool result JSON string)
+  toolName    String?
+  toolCallId  String?
+  toolInput   String?  // JSON of arguments
+  createdAt   DateTime @default(now())
+
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+model Interest {
+  id          String   @id @default(cuid())
+  sessionId   String
+  propertyId  String
+  count       Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, propertyId])
+  @@index([propertyId])
+}
