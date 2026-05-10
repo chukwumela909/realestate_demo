@@ -3,13 +3,13 @@ import BackToTop from "./BackToTop";
 export default function Footer() {
   return (
     <footer className="border-t border-hairline bg-canvas">
-      <div className="mx-auto max-w-[1320px] px-6 lg:px-12 py-16 lg:py-20">
-        <div className="grid grid-cols-12 gap-6 mb-16">
+      <div className="mx-auto max-w-[1320px] px-6 lg:px-12 py-14 sm:py-16 lg:py-20">
+        <div className="grid grid-cols-12 gap-y-10 gap-x-6 mb-12 sm:mb-16">
           <div className="col-span-12 lg:col-span-5">
-            <div className="font-serif text-[32px] tracking-[0.18em] text-ink mb-4">
+            <div className="font-serif text-[28px] sm:text-[32px] tracking-[0.18em] text-ink mb-3 sm:mb-4">
               MAISON
             </div>
-            <p className="font-serif italic text-[17px] leading-[1.6] text-ink-soft max-w-sm">
+            <p className="font-serif italic text-[16px] sm:text-[17px] leading-[1.6] text-ink-soft max-w-sm">
               An index of architecturally significant residences. Published
               monthly. Read at your own pace.
             </p>
@@ -60,7 +60,7 @@ function FooterColumn({
   items: string[];
 }) {
   return (
-    <div className="col-span-6 lg:col-span-2">
+    <div className="col-span-12 sm:col-span-6 lg:col-span-2">
       <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-4">
         {title}
       </div>

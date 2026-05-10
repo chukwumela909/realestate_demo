@@ -1,5 +1,6 @@
 import type { ChatCompletionTool } from "openai/resources/chat/completions";
 import { prisma } from "./prisma";
+import { sendWelcomeEmail, type EmailProperty } from "./email";
 
 // === tool schemas (OpenAI function-calling format) ===
 
@@ -252,19 +253,80 @@ export async function runTool(
       const name = (args.name as string | undefined) ?? undefined;
       const email = (args.email as string | undefined) ?? undefined;
       const phone = (args.phone as string | undefined) ?? undefined;
+
+      const before = await prisma.session.findUnique({
+        where: { id: sessionId },
+      });
+
       const data: Record<string, unknown> = {};
       if (name) data.name = name;
       if (email) data.email = email;
       if (phone) data.phone = phone;
       if (email || phone) data.isLead = true;
+
       await prisma.session.update({
         where: { id: sessionId },
         data,
       });
+
+      // Fire welcome email when an email is captured for the first time and we
+      // haven't sent one yet for this session. Fire-and-forget — don't block
+      // the chat reply on email delivery.
+      const isNewEmail = email && before?.email !== email;
+      const alreadySent =
+        (before as { welcomeEmailSentAt?: Date | null } | null)
+          ?.welcomeEmailSentAt ?? null;
+
+      if (isNewEmail && !alreadySent) {
+        void deliverWelcome(sessionId, email, name ?? before?.name ?? null);
+      }
+
       return { result: { ok: true, captured: data } };
     }
 
     default:
       return { result: { error: `unknown tool ${name}` } };
+  }
+}
+
+async function deliverWelcome(
+  sessionId: string,
+  email: string,
+  name: string | null,
+) {
+  try {
+    // Pull this session's top property interests for the email.
+    const interests = await prisma.interest.findMany({
+      where: { sessionId },
+      include: {
+        property: { include: { images: { where: { isPrimary: true }, take: 1 } } },
+      },
+      orderBy: [{ count: "desc" }, { updatedAt: "desc" }],
+      take: 4,
+    });
+
+    const properties: EmailProperty[] = interests.map((i) => ({
+      id: i.property.id,
+      name: i.property.name,
+      caption: i.property.caption,
+      price: i.property.price,
+      location: i.property.location,
+      status: i.property.status,
+      primaryImage: i.property.images[0]?.url,
+    }));
+
+    const result = await sendWelcomeEmail({ to: email, name, properties });
+
+    if (result.ok) {
+      // Stamp via raw SQL because the field was added in a recent migration
+      // and the generated TS client may not yet expose it on this build.
+      await prisma.$executeRaw`UPDATE Session SET welcomeEmailSentAt = ${new Date()} WHERE id = ${sessionId}`;
+      console.log(`[email] welcome sent to ${email} (id=${result.id})`);
+    } else {
+      console.warn(`[email] welcome failed for ${email}: ${result.error}`);
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "unknown";
+    console.warn(`[email] deliverWelcome threw: ${msg}`);
   }
 }

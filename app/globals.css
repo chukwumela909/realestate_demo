@@ -26,6 +26,7 @@ html,
 body {
   background-color: var(--color-canvas);
   color: var(--color-ink);
+  overflow-x: hidden;
 }
 
 body {

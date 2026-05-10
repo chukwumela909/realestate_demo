@@ -26,6 +26,17 @@ export default async function ConversationDetail({
   const label =
     session.name || session.email || session.phone || `Anonymous · ${session.id.slice(2, 8)}`;
 
+  // Read welcomeEmailSentAt via raw query (field added in a recent migration).
+  const emailRow = await prisma.$queryRaw<
+    { welcomeEmailSentAt: Date | string | null }[]
+  >`SELECT welcomeEmailSentAt FROM Session WHERE id = ${id} LIMIT 1`;
+  const rawSentAt = emailRow[0]?.welcomeEmailSentAt ?? null;
+  const welcomeSentAt = rawSentAt
+    ? rawSentAt instanceof Date
+      ? rawSentAt
+      : new Date(rawSentAt)
+    : null;
+
   return (
     <div className="grid grid-cols-12 min-h-screen">
       {/* Transcript column */}
@@ -162,6 +173,15 @@ export default async function ConversationDetail({
             <p className="font-serif italic text-[14px] text-ink-soft">
               No contact captured yet.
             </p>
+          )}
+
+          {welcomeSentAt && (
+            <div className="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-[12px] font-mono tracking-[0.06em] text-ink-muted">
+              <span className="text-accent">✓</span>
+              <span>Welcome email sent</span>
+              <span className="text-hairline-strong">·</span>
+              <span>{welcomeSentAt.toLocaleString()}</span>
+            </div>
           )}
         </div>
 

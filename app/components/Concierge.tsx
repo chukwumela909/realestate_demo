@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import ContactForm from "./ContactForm";
+import ImageLightbox from "./ImageLightbox";
+import InlineImageThumb from "./InlineImageThumb";
 import PropertyCardInline, { type PropertyDetail } from "./PropertyCardInline";
 import PropertyModal from "./PropertyModal";
+import { parseMarkdownSegments } from "../lib/parseMarkdown";
 
 type Block =
   | { kind: "text"; text: string }
-  | { kind: "card"; propertyId: string };
+  | { kind: "card"; propertyId: string }
+  | { kind: "contact"; field: "email" | "phone" | "name" };
 
 type Turn = {
   id: string;
@@ -25,16 +30,17 @@ const RING_IDLE = 18;
 const RING_NEAR = 7;
 const PROXIMITY_RADIUS = 220;
 
+type LightboxState =
+  | { kind: "property"; data: PropertyDetail; rect: DOMRect | null }
+  | { kind: "image"; url: string; alt: string; rect: DOMRect | null };
+
 export default function Concierge() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [streaming, setStreaming] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [modal, setModal] = useState<{
-    data: PropertyDetail;
-    rect: DOMRect | null;
-  } | null>(null);
+  const [lightbox, setLightbox] = useState<LightboxState | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -129,6 +135,7 @@ export default function Concierge() {
             type: string;
             text?: string;
             propertyId?: string;
+            field?: "email" | "phone" | "name";
             name?: string;
             message?: string;
           };
@@ -174,6 +181,19 @@ export default function Concierge() {
                   : t,
               ),
             );
+          } else if (evt.type === "contact_request" && evt.field) {
+            const f = evt.field;
+            setTurns((prev) =>
+              prev.map((t) =>
+                t.id === conciergeId
+                  ? {
+                      ...t,
+                      blocks: [...t.blocks, { kind: "contact", field: f }],
+                      thinkingTool: null,
+                    }
+                  : t,
+              ),
+            );
           } else if (evt.type === "tool_call" && evt.name) {
             setTurns((prev) =>
               prev.map((t) =>
@@ -199,8 +219,22 @@ export default function Concierge() {
     }
   }
 
-  function openModal(data: PropertyDetail, rect: DOMRect | null) {
-    setModal({ data, rect });
+  function openPropertyModal(data: PropertyDetail, rect: DOMRect | null) {
+    setLightbox({ kind: "property", data, rect });
+  }
+
+  function openImageLightbox(url: string, alt: string, rect: DOMRect) {
+    setLightbox({ kind: "image", url, alt, rect });
+  }
+
+  function handleContactSubmit(field: "email" | "phone" | "name", value: string) {
+    const phrase =
+      field === "email"
+        ? `My email is ${value}`
+        : field === "phone"
+          ? `My phone is ${value}`
+          : `My name is ${value}`;
+    send(phrase);
   }
 
   return (
@@ -303,17 +337,25 @@ export default function Concierge() {
                     )}
                     {t.blocks.map((b, i) =>
                       b.kind === "text" ? (
-                        <p
+                        <ConciergeText
                           key={i}
-                          className="font-serif text-[16px] leading-[1.55] text-ink whitespace-pre-wrap"
-                        >
-                          {b.text}
-                        </p>
-                      ) : (
+                          text={b.text}
+                          onOpenImage={openImageLightbox}
+                        />
+                      ) : b.kind === "card" ? (
                         <PropertyCardInline
                           key={i}
                           propertyId={b.propertyId}
-                          onOpen={openModal}
+                          onOpen={openPropertyModal}
+                        />
+                      ) : (
+                        <ContactForm
+                          key={i}
+                          field={b.field}
+                          disabled={streaming}
+                          onSubmit={(value) =>
+                            handleContactSubmit(b.field, value)
+                          }
                         />
                       ),
                     )}
@@ -372,18 +414,74 @@ export default function Concierge() {
         </div>
       )}
 
-      {modal && (
+      {lightbox?.kind === "property" && (
         <PropertyModal
-          data={modal.data}
-          originRect={modal.rect}
-          onClose={() => setModal(null)}
+          data={lightbox.data}
+          originRect={lightbox.rect}
+          onClose={() => setLightbox(null)}
           onAsk={(prompt) => {
             setOpen(true);
             setTimeout(() => send(prompt), 100);
           }}
         />
       )}
+
+      {lightbox?.kind === "image" && (
+        <ImageLightbox
+          url={lightbox.url}
+          alt={lightbox.alt}
+          originRect={lightbox.rect}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </>
+  );
+}
+
+function ConciergeText({
+  text,
+  onOpenImage,
+}: {
+  text: string;
+  onOpenImage: (url: string, alt: string, rect: DOMRect) => void;
+}) {
+  const segments = parseMarkdownSegments(text);
+  // If segments contain only whitespace text, drop them
+  const hasContent = segments.some((s) =>
+    s.kind === "image" ? true : s.text.trim().length > 0,
+  );
+  if (!hasContent) return null;
+
+  const images = segments.filter((s) => s.kind === "image");
+  const texts = segments.filter((s) => s.kind === "text" && s.text.trim().length > 0);
+
+  return (
+    <div className="flex flex-col gap-2">
+      {texts.map((s, i) =>
+        s.kind === "text" ? (
+          <p
+            key={`t-${i}`}
+            className="font-serif text-[16px] leading-[1.55] text-ink whitespace-pre-wrap"
+          >
+            {s.text.trim()}
+          </p>
+        ) : null,
+      )}
+      {images.length > 0 && (
+        <div className="flex flex-wrap items-center -mr-2">
+          {images.map((s, i) =>
+            s.kind === "image" ? (
+              <InlineImageThumb
+                key={`i-${i}`}
+                url={s.url}
+                alt={s.alt}
+                onOpen={onOpenImage}
+              />
+            ) : null,
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

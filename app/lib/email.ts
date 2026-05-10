@@ -1,0 +1,271 @@
+import { Resend } from "resend";
+
+declare global {
+  // eslint-disable-next-line no-var
+  var resend: Resend | undefined;
+}
+
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  if (!global.resend) global.resend = new Resend(key);
+  return global.resend;
+}
+
+const FROM = process.env.MAISON_FROM_EMAIL ?? "MAISON Concierge <onboarding@resend.dev>";
+
+export type EmailProperty = {
+  id: string;
+  name: string;
+  caption: string;
+  price: string;
+  location: string;
+  status: string;
+  primaryImage?: string;
+};
+
+export async function sendWelcomeEmail(opts: {
+  to: string;
+  name?: string | null;
+  properties: EmailProperty[];
+}): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const resend = getResend();
+  if (!resend) {
+    return { ok: false, error: "Missing RESEND_API_KEY" };
+  }
+
+  const subject = "From the Concierge — your residences from MAISON";
+  const html = renderHtml(opts);
+  const text = renderText(opts);
+
+  try {
+    const res = await resend.emails.send({
+      from: FROM,
+      to: opts.to,
+      subject,
+      html,
+      text,
+    });
+    if (res.error) return { ok: false, error: res.error.message };
+    if (!res.data?.id) return { ok: false, error: "no id returned" };
+    return { ok: true, id: res.data.id };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "send failed";
+    return { ok: false, error: msg };
+  }
+}
+
+// === HTML template ===
+// Inline-styled, table-based for max email client compatibility.
+// Brand: cream canvas, ink, terracotta, serif (Georgia fallback), mono (Courier fallback).
+
+function renderHtml({
+  name,
+  properties,
+}: {
+  name?: string | null;
+  properties: EmailProperty[];
+}): string {
+  const greetingName = name ? escape(name) : "there";
+  const propsHtml =
+    properties.length === 0
+      ? ""
+      : properties.map(renderPropertyRow).join("");
+
+  const propsBlock =
+    properties.length === 0
+      ? ""
+      : `
+        <tr>
+          <td style="padding: 28px 40px 0 40px;">
+            <p style="margin: 0 0 4px 0; font-family: 'Courier New', Courier, monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a8278;">
+              From our conversation
+            </p>
+            <p style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 16px; line-height: 1.5; color: #5c564e;">
+              The residences you spent time with.
+            </p>
+          </td>
+        </tr>
+        ${propsHtml}`;
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>From the Concierge — MAISON</title>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #ede7dd; font-family: Georgia, 'Times New Roman', serif; color: #1a1a1a;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ede7dd;">
+      <tr>
+        <td align="center" style="padding: 40px 16px;">
+
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #f6f2ec; border: 1px solid #d9d2c6;">
+
+            <!-- Masthead -->
+            <tr>
+              <td style="padding: 28px 40px; border-bottom: 1px solid #d9d2c6;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="font-family: Georgia, serif; font-size: 22px; letter-spacing: 0.18em; color: #1a1a1a;">
+                      MAISON
+                    </td>
+                    <td align="right" style="font-family: 'Courier New', Courier, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a8278;">
+                      Vol. 04 &nbsp;·&nbsp; Issue 02
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Greeting -->
+            <tr>
+              <td style="padding: 36px 40px 0 40px;">
+                <p style="margin: 0 0 4px 0; font-family: 'Courier New', Courier, monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a8278;">
+                  From the Concierge
+                </p>
+                <p style="margin: 0 0 24px 0; font-family: Georgia, serif; font-size: 28px; line-height: 1.2; color: #1a1a1a; font-style: italic; font-weight: 300;">
+                  Dear ${greetingName},
+                </p>
+                <p style="margin: 0 0 14px 0; font-family: Georgia, serif; font-size: 16px; line-height: 1.65; color: #1a1a1a;">
+                  We&rsquo;ve added you to the thread. A specialist will be in touch within a working day.
+                </p>
+                <p style="margin: 0; font-family: Georgia, serif; font-size: 16px; line-height: 1.65; color: #1a1a1a;">
+                  In the meantime, a few notes from our conversation.
+                </p>
+              </td>
+            </tr>
+
+            ${propsBlock}
+
+            <!-- Sign off -->
+            <tr>
+              <td style="padding: 36px 40px 12px 40px; border-top: 1px solid #d9d2c6;">
+                <p style="margin: 28px 0 0 0; font-family: Georgia, serif; font-size: 16px; line-height: 1.65; color: #1a1a1a;">
+                  If anything pulls you forward, just reply to this note or come back to the conversation.
+                </p>
+                <p style="margin: 22px 0 0 0; font-family: Georgia, serif; font-style: italic; font-size: 16px; color: #5c564e;">
+                  &mdash; The Concierge, MAISON
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 24px 40px 32px 40px;">
+                <p style="margin: 0; font-family: 'Courier New', Courier, monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a8278;">
+                  &copy; MMXXVI MAISON &nbsp;·&nbsp; All listings independent
+                </p>
+              </td>
+            </tr>
+
+          </table>
+
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+}
+
+function renderPropertyRow(p: EmailProperty): string {
+  const name = escape(p.name);
+  const caption = escape(p.caption);
+  const price = escape(p.price);
+  const location = escape(p.location);
+  const statusLabel =
+    p.status === "available"
+      ? ""
+      : p.status === "under_offer"
+        ? "Under offer"
+        : p.status === "reserved"
+          ? "Reserved"
+          : "Sold";
+
+  const photoCell = p.primaryImage
+    ? `
+        <td width="160" valign="top" style="padding: 0 20px 0 0;">
+          <img src="${escape(p.primaryImage)}" alt="${name}" width="160" height="160" style="display: block; width: 160px; height: 160px; object-fit: cover; border: 1px solid #d9d2c6;" />
+        </td>`
+    : "";
+
+  return `
+    <tr>
+      <td style="padding: 20px 40px 0 40px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid #d9d2c6;">
+          <tr>
+            <td style="padding-top: 20px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  ${photoCell}
+                  <td valign="top">
+                    <p style="margin: 0 0 4px 0; font-family: Georgia, serif; font-size: 22px; line-height: 1.2; color: #1a1a1a;">
+                      ${name}
+                    </p>
+                    <p style="margin: 0 0 12px 0; font-family: Georgia, serif; font-style: italic; font-size: 14px; line-height: 1.5; color: #5c564e;">
+                      ${caption}
+                    </p>
+                    <p style="margin: 0; font-family: 'Courier New', Courier, monospace; font-size: 12px; letter-spacing: 0.06em; color: #1a1a1a;">
+                      ${price} &nbsp;·&nbsp; <span style="color: #5c564e;">${location}</span>${statusLabel ? ` &nbsp;·&nbsp; <span style="color: #a6442c; text-transform: uppercase;">${statusLabel}</span>` : ""}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>`;
+}
+
+// Plain-text fallback — for email clients with images off / text-mode users.
+function renderText({
+  name,
+  properties,
+}: {
+  name?: string | null;
+  properties: EmailProperty[];
+}): string {
+  const greetingName = name ? name : "there";
+  const lines = [
+    "MAISON — From the Concierge",
+    "",
+    `Dear ${greetingName},`,
+    "",
+    "We've added you to the thread. A specialist will be in touch within a working day.",
+    "",
+    "In the meantime, a few notes from our conversation:",
+    "",
+  ];
+
+  if (properties.length === 0) {
+    lines.push("(No specific residences flagged yet.)", "");
+  } else {
+    for (const p of properties) {
+      lines.push(`- ${p.name}`);
+      lines.push(`  ${p.caption}`);
+      const status = p.status !== "available" ? ` · ${p.status.replace("_", " ").toUpperCase()}` : "";
+      lines.push(`  ${p.price} · ${p.location}${status}`);
+      lines.push("");
+    }
+  }
+
+  lines.push(
+    "If anything pulls you forward, just reply to this note or come back to the conversation.",
+    "",
+    "— The Concierge, MAISON",
+    "",
+    "© MMXXVI MAISON · All listings independent",
+  );
+
+  return lines.join("\n");
+}
+
+function escape(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}

@@ -37,13 +37,14 @@ model PropertyImage {
 }
 
 model Session {
-  id          String   @id // cookie value
-  name        String?
-  email       String?
-  phone       String?
-  isLead      Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                  String    @id // cookie value
+  name                String?
+  email               String?
+  phone               String?
+  isLead              Boolean   @default(false)
+  welcomeEmailSentAt  DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   messages    Message[]
   interests   Interest[]

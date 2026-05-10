@@ -7,13 +7,13 @@ export default function Featured() {
 
   return (
     <section className="border-t border-hairline">
-      <div className="mx-auto max-w-[1320px] px-6 lg:px-12 py-20 lg:py-28">
-        <div className="flex items-end justify-between mb-12 lg:mb-16">
+      <div className="mx-auto max-w-[1320px] px-6 lg:px-12 py-16 sm:py-20 lg:py-28">
+        <div className="flex items-end justify-between mb-10 sm:mb-12 lg:mb-16">
           <Reveal>
             <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-3">
               N° 01 — This issue
             </div>
-            <h2 className="font-serif text-[42px] lg:text-[56px] leading-[1.05] text-ink">
+            <h2 className="font-serif text-[36px] sm:text-[42px] lg:text-[56px] leading-[1.05] text-ink">
               Featured <span className="italic font-light">residences</span>
             </h2>
           </Reveal>
@@ -27,17 +27,34 @@ export default function Featured() {
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-12 gap-6 lg:gap-8">
+        <div className="grid grid-cols-12 gap-y-12 sm:gap-y-14 gap-x-6 lg:gap-8">
           <Reveal delay={60} className="col-span-12 lg:col-span-7 flex">
             <FeaturedCard property={hero} variant="hero" />
           </Reveal>
-          <Reveal delay={180} className="col-span-7 lg:col-span-3 flex">
+          {/* Mobile: offset right.  Desktop: 3-col split */}
+          <Reveal
+            delay={180}
+            className="col-span-12 pl-8 sm:pl-12 md:pl-0 md:col-span-7 lg:col-span-3 flex"
+          >
             <FeaturedCard property={tall} variant="tall" />
           </Reveal>
-          <Reveal delay={300} className="col-span-5 lg:col-span-2 flex">
+          {/* Mobile: offset left. */}
+          <Reveal
+            delay={300}
+            className="col-span-12 pr-8 sm:pr-12 md:pr-0 md:col-span-5 lg:col-span-2 flex"
+          >
             <FeaturedCard property={square} variant="square" />
           </Reveal>
         </div>
+
+        <Reveal delay={420}>
+          <a
+            href="#"
+            className="md:hidden mt-12 inline-flex items-center gap-2 text-[11px] font-mono tracking-[0.2em] uppercase text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors"
+          >
+            View all →
+          </a>
+        </Reveal>
       </div>
     </section>
   );
@@ -84,14 +101,16 @@ function FeaturedCard({
       <div className="flex flex-col gap-2">
         <h3
           className={`font-serif text-ink flex items-center gap-3 ${
-            isHero ? "text-[34px] leading-[1.1]" : "text-[22px] leading-[1.15]"
+            isHero
+              ? "text-[26px] sm:text-[30px] lg:text-[34px] leading-[1.1]"
+              : "text-[20px] sm:text-[22px] leading-[1.15]"
           }`}
         >
           <span>{property.name}</span>
           <span
             aria-hidden
             className={`arrow-in text-ink-soft ${
-              isHero ? "text-[24px]" : "text-[16px]"
+              isHero ? "text-[20px] sm:text-[24px]" : "text-[15px] sm:text-[16px]"
             }`}
           >
             →
@@ -99,7 +118,7 @@ function FeaturedCard({
         </h3>
 
         {isHero && (
-          <p className="caption-dim font-serif italic text-ink-soft text-[18px] leading-[1.5] max-w-md">
+          <p className="caption-dim font-serif italic text-ink-soft text-[16px] sm:text-[17px] lg:text-[18px] leading-[1.5] max-w-md">
             {property.caption}
           </p>
         )}

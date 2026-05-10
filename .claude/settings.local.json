@@ -6,8 +6,7 @@
       "Bash(pnpm add *)",
       "Bash(./node_modules/.bin/prisma migrate *)",
       "Bash(pnpm remove *)",
-      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Amirize\\\\Desktop\\\\realestate_demo\" -Recurse -Filter \"*.tsx\")",
-      "Bash(Select-Object -ExpandProperty FullName)"
+      "Bash(./node_modules/.bin/prisma generate *)"
     ]
   }
 }

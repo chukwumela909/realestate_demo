@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "../../lib/prisma";
 import { ensureSeeded } from "../../lib/seed";
 import PropertiesTable from "./PropertiesTable";
@@ -37,8 +38,16 @@ export default async function PropertiesPage() {
             Properties
           </h1>
         </div>
-        <div className="text-[11px] font-mono tracking-[0.18em] uppercase text-ink-muted">
-          {initial.length} in the index
+        <div className="flex items-center gap-6">
+          <span className="text-[11px] font-mono tracking-[0.18em] uppercase text-ink-muted">
+            {initial.length} in the index
+          </span>
+          <Link
+            href="/dashboard/properties/new"
+            className="bg-ink text-canvas px-4 py-2.5 text-[11px] font-mono tracking-[0.18em] uppercase hover:bg-accent transition-colors duration-300"
+          >
+            + New residence
+          </Link>
         </div>
       </header>
 

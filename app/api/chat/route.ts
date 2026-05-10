@@ -19,6 +19,7 @@ const MAX_TOOL_ROUNDS = 5;
 type SseEvent =
   | { type: "delta"; text: string }
   | { type: "card"; propertyId: string }
+  | { type: "contact_request"; field: "email" | "phone" | "name" }
   | { type: "tool_call"; name: string }
   | { type: "tool_done"; name: string }
   | { type: "done" }
@@ -61,36 +62,67 @@ export async function POST(req: NextRequest) {
     { role: "system", content: SYSTEM_PROMPT },
   ];
 
-  for (const m of stored) {
+  // Walk the stored transcript, reconstructing assistant turns that called
+  // tools by grouping the contiguous `tool` rows that follow each assistant
+  // row. The tool rows are the source of truth for tool_call ids/args, so the
+  // assistant row's toolCallId/toolName/toolInput are ignored on replay.
+  let cursor = 0;
+  while (cursor < stored.length) {
+    const m = stored[cursor];
+
     if (m.role === "user") {
       history.push({ role: "user", content: m.content });
-    } else if (m.role === "assistant") {
-      // assistant messages may carry tool_calls we re-emit
-      if (m.toolCallId && m.toolName) {
-        history.push({
-          role: "assistant",
-          content: m.content || "",
-          tool_calls: [
-            {
-              id: m.toolCallId,
-              type: "function",
-              function: {
-                name: m.toolName,
-                arguments: m.toolInput || "{}",
-              },
-            },
-          ],
-        });
-      } else {
-        history.push({ role: "assistant", content: m.content });
-      }
-    } else if (m.role === "tool") {
-      history.push({
-        role: "tool",
-        tool_call_id: m.toolCallId ?? "",
-        content: m.content,
-      });
+      cursor++;
+      continue;
     }
+
+    if (m.role === "assistant") {
+      let look = cursor + 1;
+      const toolRows: typeof stored = [];
+      while (look < stored.length && stored[look].role === "tool") {
+        toolRows.push(stored[look]);
+        look++;
+      }
+
+      if (toolRows.length > 0) {
+        const toolCalls: ChatCompletionMessageToolCall[] = toolRows
+          .filter((t) => t.toolCallId && t.toolName)
+          .map((t) => ({
+            id: t.toolCallId as string,
+            type: "function",
+            function: {
+              name: t.toolName as string,
+              arguments: t.toolInput || "{}",
+            },
+          }));
+
+        if (toolCalls.length > 0) {
+          history.push({
+            role: "assistant",
+            content: m.content || "",
+            tool_calls: toolCalls,
+          });
+          for (const tr of toolRows) {
+            if (!tr.toolCallId) continue;
+            history.push({
+              role: "tool",
+              tool_call_id: tr.toolCallId,
+              content: tr.content,
+            });
+          }
+          cursor = look;
+          continue;
+        }
+      }
+
+      // Plain assistant prose, no tool calls
+      history.push({ role: "assistant", content: m.content });
+      cursor++;
+      continue;
+    }
+
+    // Orphan `tool` row (e.g. from old buggy sessions) — skip defensively
+    cursor++;
   }
 
   const stream = new ReadableStream<Uint8Array>({
@@ -209,7 +241,7 @@ export async function POST(req: NextRequest) {
               parsedArgs = {};
             }
 
-            const { result, uiCard } = await runTool(
+            const { result, uiCard, uiContactRequest } = await runTool(
               tc.name,
               parsedArgs,
               session.id,
@@ -235,6 +267,8 @@ export async function POST(req: NextRequest) {
             });
 
             if (uiCard) send({ type: "card", propertyId: uiCard.propertyId });
+            if (uiContactRequest)
+              send({ type: "contact_request", field: uiContactRequest.field });
             send({ type: "tool_done", name: tc.name });
           }
 

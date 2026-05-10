@@ -27,13 +27,13 @@ export default function MoodIndex() {
 
   return (
     <section className="border-t border-hairline bg-canvas-deep/40">
-      <div className="mx-auto max-w-[1320px] px-6 lg:px-12 py-20 lg:py-28">
-        <div className="grid grid-cols-12 gap-6 mb-12 lg:mb-16">
+      <div className="mx-auto max-w-[1320px] px-6 lg:px-12 py-16 sm:py-20 lg:py-28">
+        <div className="grid grid-cols-12 gap-6 mb-10 sm:mb-12 lg:mb-16">
           <Reveal className="col-span-12 lg:col-span-6">
             <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-3">
               N° 02 — The Index
             </div>
-            <h2 className="font-serif text-[42px] lg:text-[56px] leading-[1.05] text-ink">
+            <h2 className="font-serif text-[36px] sm:text-[42px] lg:text-[56px] leading-[1.05] text-ink">
               Browse by <span className="italic font-light">feeling</span>
             </h2>
           </Reveal>
@@ -41,7 +41,7 @@ export default function MoodIndex() {
             delay={140}
             className="col-span-12 lg:col-span-5 lg:col-start-8 self-end"
           >
-            <p className="font-serif italic text-[18px] leading-[1.5] text-ink-soft">
+            <p className="font-serif italic text-[16px] sm:text-[18px] leading-[1.5] text-ink-soft">
               Bedrooms count. So does the way a kitchen catches the morning.
               Pick a mood; the index reorders itself.
             </p>
@@ -49,8 +49,8 @@ export default function MoodIndex() {
         </div>
 
         <Reveal delay={120}>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-3 mb-12 pb-6 border-b border-hairline">
-            <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mr-3">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-3 mb-10 sm:mb-12 pb-6 border-b border-hairline">
+            <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mr-2 sm:mr-3 w-full sm:w-auto mb-1 sm:mb-0">
               Filter ·
             </span>
             <MoodChip
@@ -140,7 +140,7 @@ function MoodChip({
   return (
     <button
       onClick={onClick}
-      className={`relative px-4 py-2 text-[13px] font-serif italic transition-colors duration-300
+      className={`relative px-4 py-2.5 min-h-[40px] text-[14px] sm:text-[13px] font-serif italic transition-colors duration-300
         ${
           active
             ? "text-canvas bg-ink"

@@ -61,7 +61,7 @@ export default function PropertyModal({ data, originRect, onClose, onAsk }: Prop
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-8"
+      className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-8"
       role="dialog"
       aria-label={data.name}
       aria-modal="true"
@@ -74,22 +74,28 @@ export default function PropertyModal({ data, originRect, onClose, onAsk }: Prop
         }`}
       />
 
-      {/* dialog */}
+      {/* dialog — bottom-sheet on mobile, centered modal on desktop */}
       <div
-        className="relative w-full max-w-[1100px] max-h-[88vh] bg-canvas overflow-hidden flex flex-col"
+        className="relative w-full max-w-[1100px] h-[92vh] sm:h-auto sm:max-h-[88vh] bg-canvas overflow-hidden flex flex-col rounded-t-2xl sm:rounded-none"
         style={{
-          transform: animateIn ? "translate(0,0) scale(1)" : startTransform,
+          transform: animateIn
+            ? "translate(0,0) scale(1)"
+            : typeof window !== "undefined" && window.innerWidth < 640
+              ? "translateY(100%)"
+              : startTransform,
           opacity: animateIn ? 1 : 0.6,
           transition:
             "transform 600ms cubic-bezier(0.22, 1, 0.36, 1), opacity 360ms cubic-bezier(0.22, 1, 0.36, 1)",
           transformOrigin: "center center",
         }}
       >
+        {/* drag handle (mobile only) */}
+        <div className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 z-10 h-1 w-10 bg-ink/20 rounded-full" />
         {/* close */}
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 z-20 h-9 w-9 flex items-center justify-center font-serif text-[24px] text-ink hover:text-accent transition-colors"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 h-11 w-11 flex items-center justify-center font-serif text-[28px] sm:text-[24px] text-ink hover:text-accent transition-colors"
         >
           ×
         </button>
@@ -113,14 +119,14 @@ export default function PropertyModal({ data, originRect, onClose, onAsk }: Prop
                   setImgIdx((i) => (i - 1 + images.length) % images.length)
                 }
                 aria-label="Previous"
-                className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 flex items-center justify-center bg-canvas/85 hover:bg-canvas font-serif text-[22px] text-ink transition-colors"
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-12 w-12 sm:h-10 sm:w-10 flex items-center justify-center bg-canvas/85 hover:bg-canvas font-serif text-[24px] sm:text-[22px] text-ink transition-colors"
               >
                 ‹
               </button>
               <button
                 onClick={() => setImgIdx((i) => (i + 1) % images.length)}
                 aria-label="Next"
-                className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 flex items-center justify-center bg-canvas/85 hover:bg-canvas font-serif text-[22px] text-ink transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-12 w-12 sm:h-10 sm:w-10 flex items-center justify-center bg-canvas/85 hover:bg-canvas font-serif text-[24px] sm:text-[22px] text-ink transition-colors"
               >
                 ›
               </button>
@@ -144,18 +150,18 @@ export default function PropertyModal({ data, originRect, onClose, onAsk }: Prop
         </div>
 
         {/* footer info */}
-        <div className="flex items-end justify-between gap-6 px-6 py-5 border-t border-hairline">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6 px-5 sm:px-6 py-5 sm:py-5 pb-[max(env(safe-area-inset-bottom),20px)] sm:pb-5 border-t border-hairline">
           <div className="min-w-0">
             <div className="text-[10px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-1">
               N° {data.id}
             </div>
-            <h3 className="font-serif text-[24px] sm:text-[28px] leading-tight text-ink">
+            <h3 className="font-serif text-[22px] sm:text-[28px] leading-tight text-ink">
               {data.name}
             </h3>
             <p className="font-serif italic text-[14px] sm:text-[15px] leading-snug text-ink-soft mt-1 max-w-xl">
               {data.caption}
             </p>
-            <div className="flex items-center gap-3 mt-2 text-[12px] font-mono tracking-[0.08em] text-ink">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-[12px] font-mono tracking-[0.08em] text-ink">
               <span>{data.price}</span>
               <span className="h-3 w-px bg-hairline-strong" />
               <span className="text-ink-soft">{data.location}</span>
@@ -174,7 +180,7 @@ export default function PropertyModal({ data, originRect, onClose, onAsk }: Prop
                 onAsk(`Tell me more about ${data.name}.`);
                 onClose();
               }}
-              className="flex-shrink-0 text-[11px] font-mono tracking-[0.2em] uppercase text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors duration-300"
+              className="self-start sm:self-auto flex-shrink-0 text-[11px] font-mono tracking-[0.2em] uppercase text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors duration-300"
             >
               Ask about this →
             </button>
