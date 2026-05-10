@@ -19,7 +19,6 @@ export default function Reveal({
   const ref = useReveal<HTMLDivElement>({ delay });
   return (
     <Tag
-      // @ts-expect-error - generic ref across tag types
       ref={ref}
       className={`reveal ${className}`}
     >

@@ -79,19 +79,18 @@ export function validateProperty(input: unknown): {
     .filter((m, idx, arr) => arr.indexOf(m) === idx);
   if (cleanedMoods.length === 0) errors.push("Pick at least one mood.");
 
-  const images: PropertyImageInput[] = imagesRaw
-    .map((raw) => {
-      if (!raw || typeof raw !== "object") return null;
+  const images = imagesRaw
+    .flatMap<PropertyImageInput>((raw) => {
+      if (!raw || typeof raw !== "object") return [];
       const r = raw as Record<string, unknown>;
       const url = String(r.url ?? "").trim();
-      if (!url) return null;
-      return {
+      if (!url) return [];
+      return [{
         url,
         alt: r.alt ? String(r.alt).trim() : null,
         isPrimary: Boolean(r.isPrimary),
-      };
-    })
-    .filter((x): x is PropertyImageInput => x !== null);
+      }];
+    });
 
   if (images.length === 0) errors.push("Add at least one image.");
 
