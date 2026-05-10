@@ -1,0 +1,29 @@
+# Build artifacts and deps — installed inside the container
+node_modules
+.next
+out
+build
+
+# Local dev SQLite + journals — never ship; container uses mounted volume
+prisma/dev.db
+prisma/dev.db-journal
+prisma/*.db-journal
+
+# Local env files — secrets come from Coolify env config, not the image
+.env
+.env.local
+.env.*.local
+
+# Editor / OS noise
+.DS_Store
+.vscode
+.idea
+*.log
+*.tsbuildinfo
+
+# Git
+.git
+.gitignore
+
+# Next.js cache
+.swc
