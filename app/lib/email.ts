@@ -1,7 +1,6 @@
 import { Resend } from "resend";
 
 declare global {
-  // eslint-disable-next-line no-var
   var resend: Resend | undefined;
 }
 
@@ -12,7 +11,10 @@ function getResend(): Resend | null {
   return global.resend;
 }
 
-const FROM = process.env.MAISON_FROM_EMAIL ?? "MAISON Concierge <onboarding@resend.dev>";
+const FROM =
+  process.env.CLOUD9_FROM_EMAIL ??
+  process.env.MAISON_FROM_EMAIL ??
+  "cloud9 Sales <onboarding@resend.dev>";
 
 export type EmailProperty = {
   id: string;
@@ -34,7 +36,7 @@ export async function sendWelcomeEmail(opts: {
     return { ok: false, error: "Missing RESEND_API_KEY" };
   }
 
-  const subject = "From the Concierge — your residences from MAISON";
+  const subject = "From your cloud9 sales agent - your land listings";
   const html = renderHtml(opts);
   const text = renderText(opts);
 
@@ -82,7 +84,7 @@ function renderHtml({
               From our conversation
             </p>
             <p style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 16px; line-height: 1.5; color: #5c564e;">
-              The residences you spent time with.
+              The land listings you spent time with.
             </p>
           </td>
         </tr>
@@ -93,7 +95,7 @@ function renderHtml({
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>From the Concierge — MAISON</title>
+    <title>From your cloud9 sales agent</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #ede7dd; font-family: Georgia, 'Times New Roman', serif; color: #1a1a1a;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ede7dd;">
@@ -108,7 +110,7 @@ function renderHtml({
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td style="font-family: Georgia, serif; font-size: 22px; letter-spacing: 0.18em; color: #1a1a1a;">
-                      MAISON
+                      cloud9
                     </td>
                     <td align="right" style="font-family: 'Courier New', Courier, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a8278;">
                       Vol. 04 &nbsp;·&nbsp; Issue 02
@@ -122,13 +124,13 @@ function renderHtml({
             <tr>
               <td style="padding: 36px 40px 0 40px;">
                 <p style="margin: 0 0 4px 0; font-family: 'Courier New', Courier, monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a8278;">
-                  From the Concierge
+                  From your cloud9 sales agent
                 </p>
                 <p style="margin: 0 0 24px 0; font-family: Georgia, serif; font-size: 28px; line-height: 1.2; color: #1a1a1a; font-style: italic; font-weight: 300;">
                   Dear ${greetingName},
                 </p>
                 <p style="margin: 0 0 14px 0; font-family: Georgia, serif; font-size: 16px; line-height: 1.65; color: #1a1a1a;">
-                  We&rsquo;ve added you to the thread. A specialist will be in touch within a working day.
+                  We&rsquo;ve added you to the thread. I will use this to keep your land enquiry moving from our Abuja office.
                 </p>
                 <p style="margin: 0; font-family: Georgia, serif; font-size: 16px; line-height: 1.65; color: #1a1a1a;">
                   In the meantime, a few notes from our conversation.
@@ -145,7 +147,7 @@ function renderHtml({
                   If anything pulls you forward, just reply to this note or come back to the conversation.
                 </p>
                 <p style="margin: 22px 0 0 0; font-family: Georgia, serif; font-style: italic; font-size: 16px; color: #5c564e;">
-                  &mdash; The Concierge, MAISON
+                  &mdash; Your cloud9 sales agent
                 </p>
               </td>
             </tr>
@@ -154,7 +156,7 @@ function renderHtml({
             <tr>
               <td style="padding: 24px 40px 32px 40px;">
                 <p style="margin: 0; font-family: 'Courier New', Courier, monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a8278;">
-                  &copy; MMXXVI MAISON &nbsp;·&nbsp; All listings independent
+                  &copy; MMXXVI cloud9 &nbsp;·&nbsp; All land listings verified
                 </p>
               </td>
             </tr>
@@ -228,18 +230,18 @@ function renderText({
 }): string {
   const greetingName = name ? name : "there";
   const lines = [
-    "MAISON — From the Concierge",
+    "cloud9 - From your sales agent",
     "",
     `Dear ${greetingName},`,
     "",
-    "We've added you to the thread. A specialist will be in touch within a working day.",
+    "We've added you to the thread. I will use this to keep your land enquiry moving from our Abuja office.",
     "",
     "In the meantime, a few notes from our conversation:",
     "",
   ];
 
   if (properties.length === 0) {
-    lines.push("(No specific residences flagged yet.)", "");
+    lines.push("(No specific land listings flagged yet.)", "");
   } else {
     for (const p of properties) {
       lines.push(`- ${p.name}`);
@@ -253,9 +255,9 @@ function renderText({
   lines.push(
     "If anything pulls you forward, just reply to this note or come back to the conversation.",
     "",
-    "— The Concierge, MAISON",
+    "- Your cloud9 sales agent",
     "",
-    "© MMXXVI MAISON · All listings independent",
+    "© MMXXVI cloud9 · All land listings verified",
   );
 
   return lines.join("\n");

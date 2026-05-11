@@ -5,11 +5,11 @@ import { useEffect } from "react";
 type Item = { label: string; number: string };
 
 const ITEMS: Item[] = [
-  { number: "01", label: "Buy" },
-  { number: "02", label: "Sell" },
+  { number: "01", label: "Buy land" },
+  { number: "02", label: "Sell land" },
   { number: "03", label: "Journal" },
   { number: "04", label: "Index" },
-  { number: "05", label: "Concierge" },
+  { number: "05", label: "Sales agent" },
 ];
 
 export default function MobileMenu({
@@ -47,7 +47,7 @@ export default function MobileMenu({
       <div className="relative h-full flex flex-col">
         <div className="flex items-center justify-between px-6 h-16 border-b border-hairline">
           <span className="font-serif text-[22px] tracking-[0.18em] text-ink">
-            MAISON
+            cloud9
           </span>
           <button
             onClick={onClose}
@@ -87,7 +87,7 @@ export default function MobileMenu({
           </ul>
 
           <div className="mt-14 pt-8 border-t border-hairline flex items-center justify-between text-[11px] font-mono tracking-[0.2em] uppercase">
-            <span className="text-ink-muted">EN · USD</span>
+            <span className="text-ink-muted">EN · NGN</span>
             <a
               href="#"
               onClick={onClose}
@@ -98,8 +98,8 @@ export default function MobileMenu({
           </div>
 
           <p className="mt-10 font-serif italic text-[15px] leading-[1.6] text-ink-soft max-w-xs">
-            An index of architecturally significant residences. Published
-            monthly.
+            Mixed-use land across central, northern, western, and southern
+            Nigeria.
           </p>
         </nav>
       </div>

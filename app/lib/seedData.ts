@@ -1,9 +1,10 @@
-// Seed source-of-truth for properties.
-// Each property gets a primary photo + 2 gallery shots.
-// Curated from images.unsplash.com — known-stable IDs.
+// Seed source-of-truth for cloud9 land listings.
+// Each listing gets a primary location image + 2 gallery shots.
 
-const u = (id: string, w = 1600) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+const commons = (filename: string, w = 1600) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(
+    filename,
+  )}?width=${w}`;
 
 export type SeedProperty = {
   id: string;
@@ -17,160 +18,190 @@ export type SeedProperty = {
   images: { url: string; alt?: string; isPrimary?: boolean }[];
 };
 
+const gallery = {
+  abuja: [
+    commons("Landscape view of abuja.jpg", 1800),
+    commons("Abuja landscape view.jpg", 1400),
+    commons(
+      "Lithium mine showing the beautiful landscape of Takushara village in Abuja, Nigeria.jpg",
+      1400,
+    ),
+  ],
+  kaduna: [
+    commons("A landscape farm in Kadpoly, Sabon Tasha Campus. Kaduna, Nigeria 🇳🇬.jpg", 1800),
+    commons("Landscape view of abuja.jpg", 1400),
+    commons("Beautiful formations in Jos Nigeria.jpg", 1400),
+  ],
+  plateau: [
+    commons("Beautiful formations in Jos Nigeria.jpg", 1800),
+    commons(
+      "ASC Leiden - Rietveld Collection - Nigeria 1970 - 1973 - 01 - 029 The Jos plateau. Landscape with a rocky hillside along the road - Jos Plateau.jpg",
+      1400,
+    ),
+    commons("Landscape view of abuja.jpg", 1400),
+  ],
+  ibadan: [
+    commons("Overview Ibadan, Nigeria.jpg", 1800),
+    commons("Ibadan, Nigeria.jpg", 1400),
+    commons("Area In Ibadan, Nigeria.jpg", 1400),
+  ],
+  lagos: [
+    commons("Lagos, Nigeria.jpg", 1800),
+    commons("Overview Ibadan, Nigeria.jpg", 1400),
+    commons("Area In Ibadan, Nigeria.jpg", 1400),
+  ],
+  portHarcourt: [
+    commons("Rain forest Port Harcourt, Nigeria.jpg", 1800),
+    commons("Marina Resort, Calabar.jpg", 1400),
+    commons("Kwa Falls Calabar 37.jpg", 1400),
+  ],
+  calabar: [
+    commons("Marina Resort, Calabar.jpg", 1800),
+    commons("Kwa Falls Calabar 37.jpg", 1400),
+    commons("Obudu mountain cattle ranch,calabar Nigeria.jpg", 1400),
+  ],
+};
+
+const images = (urls: string[], alt: string) =>
+  urls.map((url, index) => ({
+    url,
+    alt: `${alt} ${index + 1}`,
+    isPrimary: index === 0,
+  }));
+
 export const PROPERTIES_SEED: SeedProperty[] = [
   {
-    id: "cedar-house",
-    name: "Cedar House",
+    id: "jabi-growth-corridor",
+    name: "Jabi Growth Corridor",
     caption:
-      "A 1962 modernist on three quiet acres, designed by a student of Schindler.",
-    price: "$4,200,000",
-    location: "Sonoma, CA",
-    moods: ["solitude", "modernist", "garden"],
-    images: [
-      { url: u("photo-1600596542815-ffad4c1539a9"), isPrimary: true, alt: "Cedar House exterior at dusk" },
-      { url: u("photo-1600210492486-724fe5c67fb0"), alt: "Living room with original cabinetry" },
-      { url: u("photo-1600585152915-d208bec867a1"), alt: "View from the garden" },
-    ],
+      "Mixed-use land positioned for retail frontage, apartments, and everyday access into central Abuja.",
+    price: "NGN 420,000,000",
+    location: "Jabi, Abuja FCT",
+    moods: ["mixed-use", "central", "infrastructure"],
+    images: images(gallery.abuja, "Jabi Abuja mixed-use land"),
   },
   {
-    id: "loft-04",
-    name: "Loft 04",
-    caption: "Cast-iron columns, north-facing light, the last of its block.",
-    price: "$1,800,000",
-    location: "Tribeca, NY",
-    moods: ["urban", "heirloom"],
-    images: [
-      { url: u("photo-1600585154340-be6161a56a0c"), isPrimary: true, alt: "Loft 04 main room" },
-      { url: u("photo-1545324418-cc1a3fa10c00"), alt: "Cast-iron columns in morning light" },
-      { url: u("photo-1505691938895-1758d7feb511"), alt: "View toward the street" },
-    ],
+    id: "guzape-hillside-parcels",
+    name: "Guzape Hillside Parcels",
+    caption:
+      "A serviced hillside holding for low-rise apartments, workspaces, and quiet residential streets.",
+    price: "NGN 680,000,000",
+    location: "Guzape, Abuja FCT",
+    moods: ["mixed-use", "premium", "central"],
+    images: images(gallery.abuja, "Guzape Abuja hillside land"),
   },
   {
-    id: "the-annex",
-    name: "The Annex",
-    caption: "A converted glasshouse off a residential lane.",
-    price: "$2,400,000",
-    location: "Toronto, ON",
-    moods: ["urban", "garden"],
-    images: [
-      { url: u("photo-1564013799919-ab600027ffc6"), isPrimary: true, alt: "The Annex glasshouse" },
-      { url: u("photo-1567496898669-ee935f5f647a"), alt: "Interior gathering space" },
-      { url: u("photo-1502005229762-cf1b2da7c5d6"), alt: "Garden view" },
-    ],
+    id: "karu-nasarawa-link",
+    name: "Karu-Nasarawa Link",
+    caption:
+      "Accessible development land on the Abuja-Nasarawa growth path, ready for a neighbourhood-scale scheme.",
+    price: "NGN 155,000,000",
+    location: "Karu, Nasarawa",
+    moods: ["mixed-use", "growth", "infrastructure"],
+    images: images(gallery.abuja, "Karu Nasarawa land"),
   },
   {
-    id: "long-shore",
-    name: "Long Shore",
-    caption: "Cedar-clad, set fifteen feet back from the tideline.",
-    price: "$6,800,000",
-    location: "Mendocino, CA",
-    moods: ["coastal", "solitude", "modernist"],
-    images: [
-      { url: u("photo-1613490493576-7fde63acd811"), isPrimary: true, alt: "Long Shore facing the ocean" },
-      { url: u("photo-1600607687939-ce8a6c25118c"), alt: "Open living over the tideline" },
-      { url: u("photo-1502005229762-cf1b2da7c5d6"), alt: "Cedar-clad exterior" },
-    ],
+    id: "kaduna-rail-hub",
+    name: "Kaduna Rail Hub",
+    caption:
+      "A practical parcel for shops, compact offices, and residential blocks close to Kaduna's mobility spine.",
+    price: "NGN 210,000,000",
+    location: "Rigasa, Kaduna",
+    moods: ["mixed-use", "northern", "infrastructure"],
+    images: images(gallery.kaduna, "Kaduna mixed-use land"),
   },
   {
-    id: "field-house",
-    name: "Field House",
-    caption: "A working farmhouse, restored room by room over a decade.",
-    price: "$3,150,000",
-    location: "Hudson Valley, NY",
-    moods: ["heirloom", "garden", "solitude"],
-    images: [
-      { url: u("photo-1512917774080-9991f1c4c750"), isPrimary: true, alt: "Field House in summer light" },
-      { url: u("photo-1505691938895-1758d7feb511"), alt: "Sitting room" },
-      { url: u("photo-1502005229762-cf1b2da7c5d6"), alt: "Walled garden" },
-    ],
+    id: "kano-commerce-edge",
+    name: "Kano Commerce Edge",
+    caption:
+      "Commercially minded land for warehousing, market-facing retail, and apartments serving Kano's trade routes.",
+    price: "NGN 260,000,000",
+    location: "Kumbotso, Kano",
+    moods: ["mixed-use", "northern", "growth"],
+    images: images(gallery.kaduna, "Kano commercial land"),
   },
   {
-    id: "the-glasshouse",
-    name: "The Glasshouse",
-    caption: "Mies-quoting; commissioned by a botanist in 1971.",
-    price: "$5,400,000",
-    location: "Litchfield, CT",
-    moods: ["modernist", "garden", "heirloom"],
-    images: [
-      { url: u("photo-1605276374104-dee2a0ed3cd6"), isPrimary: true, alt: "The Glasshouse in winter" },
-      { url: u("photo-1600585154340-be6161a56a0c"), alt: "Open plan interior" },
-      { url: u("photo-1600210492486-724fe5c67fb0"), alt: "Botanical specimens" },
-    ],
+    id: "jos-plateau-view",
+    name: "Jos Plateau View",
+    caption:
+      "Cool-climate development land suited to hospitality, residential plots, and small-format destination retail.",
+    price: "NGN 135,000,000",
+    location: "Rayfield, Jos, Plateau",
+    moods: ["mixed-use", "northern", "greenfield"],
+    images: images(gallery.plateau, "Jos Plateau mixed-use land"),
   },
   {
-    id: "rue-saint-paul",
-    name: "Rue Saint-Paul",
-    caption: "A floor-through above a 19th-century courtyard.",
-    price: "€2,950,000",
-    location: "Le Marais, Paris",
-    moods: ["urban", "heirloom"],
-    images: [
-      { url: u("photo-1600566753190-17f0baa2a6c3"), isPrimary: true, alt: "Rue Saint-Paul salon" },
-      { url: u("photo-1600210492486-724fe5c67fb0"), alt: "Kitchen and dining" },
-      { url: u("photo-1545324418-cc1a3fa10c00"), alt: "Courtyard view" },
-    ],
+    id: "minna-campus-belt",
+    name: "Minna Campus Belt",
+    caption:
+      "Neighbourhood land for student housing, convenience retail, and everyday services in a steady demand pocket.",
+    price: "NGN 118,000,000",
+    location: "Bosso, Minna, Niger",
+    moods: ["mixed-use", "central", "growth"],
+    images: images(gallery.kaduna, "Minna development land"),
   },
   {
-    id: "cove-cottage",
-    name: "Cove Cottage",
-    caption: "Three rooms, a stone hearth, a quiet bay outside the window.",
-    price: "$1,250,000",
-    location: "Tofino, BC",
-    moods: ["coastal", "solitude", "heirloom"],
-    images: [
-      { url: u("photo-1600607687939-ce8a6c25118c"), isPrimary: true, alt: "Cove Cottage from the bay" },
-      { url: u("photo-1512917774080-9991f1c4c750"), alt: "The hearth room" },
-      { url: u("photo-1613490493576-7fde63acd811"), alt: "Looking out to the bay" },
-    ],
+    id: "lokoja-confluence-acreage",
+    name: "Lokoja Confluence Acreage",
+    caption:
+      "Broad land with room for a flexible estate plan near one of central Nigeria's strongest logistics crossings.",
+    price: "NGN 190,000,000",
+    location: "Felele, Lokoja, Kogi",
+    moods: ["mixed-use", "central", "greenfield"],
+    images: images(gallery.plateau, "Lokoja mixed-use acreage"),
   },
   {
-    id: "atelier-46",
-    name: "Atelier 46",
-    caption: "A north-light artist's studio with a small garden behind.",
-    price: "£1,750,000",
-    location: "Hampstead, London",
-    moods: ["urban", "garden", "heirloom"],
-    images: [
-      { url: u("photo-1600210492486-724fe5c67fb0"), isPrimary: true, alt: "Atelier 46 studio" },
-      { url: u("photo-1564013799919-ab600027ffc6"), alt: "Garden behind the atelier" },
-      { url: u("photo-1545324418-cc1a3fa10c00"), alt: "Upper-floor reading nook" },
-    ],
+    id: "epe-lagoon-extension",
+    name: "Epe Lagoon Extension",
+    caption:
+      "Western Nigeria land for a measured estate, light commerce, and long-horizon value around the Lekki-Epe axis.",
+    price: "NGN 310,000,000",
+    location: "Epe, Lagos",
+    moods: ["mixed-use", "western", "growth"],
+    images: images(gallery.lagos, "Epe Lagos landed property"),
   },
   {
-    id: "white-pine",
-    name: "White Pine",
-    caption: "A cantilevered cabin reading toward an unbroken ridgeline.",
-    price: "$2,100,000",
-    location: "Stowe, VT",
-    moods: ["solitude", "modernist", "coastal"],
-    images: [
-      { url: u("photo-1505691938895-1758d7feb511"), isPrimary: true, alt: "White Pine on the ridge" },
-      { url: u("photo-1605276374104-dee2a0ed3cd6"), alt: "Sitting area facing the ridge" },
-      { url: u("photo-1600596542815-ffad4c1539a9"), alt: "Approach through pine" },
-    ],
+    id: "ibadan-north-gateway",
+    name: "Ibadan North Gateway",
+    caption:
+      "A friendly entry point for townhouse plots, corner shops, and office suites in a mature western city.",
+    price: "NGN 175,000,000",
+    location: "Moniya, Ibadan, Oyo",
+    moods: ["mixed-use", "western", "infrastructure"],
+    images: images(gallery.ibadan, "Ibadan mixed-use land"),
   },
   {
-    id: "harbor-row",
-    name: "Harbor Row",
-    caption: "A 1908 brick row house, two blocks from the water.",
-    price: "$3,650,000",
-    location: "Beacon Hill, MA",
-    moods: ["urban", "heirloom", "coastal"],
-    images: [
-      { url: u("photo-1571055107559-3e67626fa8be"), isPrimary: true, alt: "Harbor Row façade" },
-      { url: u("photo-1600585154340-be6161a56a0c"), alt: "Front parlour" },
-      { url: u("photo-1502005229762-cf1b2da7c5d6"), alt: "Walk toward the harbor" },
-    ],
+    id: "port-harcourt-green-belt",
+    name: "Port Harcourt Green Belt",
+    caption:
+      "Southern Nigeria land for a balanced estate plan with retail services and generous green edges.",
+    price: "NGN 240,000,000",
+    location: "Eleme Road, Port Harcourt, Rivers",
+    moods: ["mixed-use", "southern", "greenfield"],
+    images: images(gallery.portHarcourt, "Port Harcourt landed property"),
+  },
+  {
+    id: "calabar-river-parcels",
+    name: "Calabar River Parcels",
+    caption:
+      "Scenic southern land for hospitality-led development, waterfront commerce, and low-density residential plots.",
+    price: "NGN 165,000,000",
+    location: "Calabar, Cross River",
+    moods: ["mixed-use", "southern", "greenfield"],
+    images: images(gallery.calabar, "Calabar mixed-use land"),
   },
 ];
 
 export const MOODS_LIST = [
-  "solitude",
-  "coastal",
-  "heirloom",
-  "urban",
-  "garden",
-  "modernist",
+  "mixed-use",
+  "central",
+  "northern",
+  "western",
+  "southern",
+  "growth",
+  "infrastructure",
+  "greenfield",
+  "premium",
 ] as const;
 
 export type Mood = (typeof MOODS_LIST)[number];

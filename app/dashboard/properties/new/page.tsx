@@ -15,7 +15,7 @@ export default function NewPropertyPage() {
 
       <header className="mt-6 mb-10">
         <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-2">
-          New residence
+          New land listing
         </div>
         <h1 className="font-serif text-[40px] lg:text-[48px] leading-[1.05] text-ink">
           Add to <span className="italic font-light">the index</span>

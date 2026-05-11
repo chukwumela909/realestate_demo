@@ -7,17 +7,17 @@ export default function Footer() {
         <div className="grid grid-cols-12 gap-y-10 gap-x-6 mb-12 sm:mb-16">
           <div className="col-span-12 lg:col-span-5">
             <div className="font-serif text-[28px] sm:text-[32px] tracking-[0.18em] text-ink mb-3 sm:mb-4">
-              MAISON
+              cloud9
             </div>
             <p className="font-serif italic text-[16px] sm:text-[17px] leading-[1.6] text-ink-soft max-w-sm">
-              An index of architecturally significant residences. Published
-              monthly. Read at your own pace.
+              A friendly index of mixed-use land across Nigeria. Central and
+              northern first, with western and southern parcels in view.
             </p>
           </div>
 
           <FooterColumn
             title="Index"
-            items={["This issue", "All residences", "Archive", "Submit a home"]}
+            items={["Available land", "All parcels", "Archive", "Submit land"]}
           />
           <FooterColumn
             title="Office"
@@ -26,19 +26,19 @@ export default function Footer() {
           <FooterColumn
             title="Contact"
             items={[
-              "concierge@maison.co",
-              "+1 (212) 555-0142",
-              "47 Greene Street",
-              "New York, NY 10013",
+              "sales@cloud9.ng",
+              "+234 (0) 700 000 9000",
+              "Abuja land desk",
+              "Nigeria",
             ]}
           />
         </div>
 
         <div className="border-t border-hairline pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] font-mono tracking-[0.18em] uppercase text-ink-muted">
           <div className="flex items-center gap-3 sm:gap-6">
-            <span>© MMXXVI MAISON</span>
+            <span>© MMXXVI cloud9</span>
             <span className="text-hairline-strong">·</span>
-            <span>All listings independent</span>
+            <span>All land listings verified</span>
           </div>
           <BackToTop className="group flex items-center gap-2 text-ink hover:text-accent transition-colors duration-300">
             <span>Back to top</span>

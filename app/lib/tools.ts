@@ -10,14 +10,14 @@ export const TOOLS: ChatCompletionTool[] = [
     function: {
       name: "list_properties",
       description:
-        "List residences in the index. Optionally filter by mood tag, by status, or by a max price (USD). Returns a small summary list — call get_property for details.",
+        "List land listings in the index. Optionally filter by mood/region tag, by status, or by a max price in NGN. Returns a small summary list - call get_property for details.",
       parameters: {
         type: "object",
         properties: {
           mood: {
             type: "string",
             description:
-              "Optional mood filter — one of: solitude, coastal, heirloom, urban, garden, modernist",
+              "Optional mood/region filter - one of: mixed-use, central, northern, western, southern, growth, infrastructure, greenfield, premium",
           },
           status: {
             type: "string",
@@ -27,7 +27,7 @@ export const TOOLS: ChatCompletionTool[] = [
           maxPriceUsd: {
             type: "number",
             description:
-              "Optional max price in USD. Best-effort numeric parse of the listed price.",
+              "Optional max price in NGN. Best-effort numeric parse of the listed price.",
           },
         },
       },
@@ -42,7 +42,10 @@ export const TOOLS: ChatCompletionTool[] = [
       parameters: {
         type: "object",
         properties: {
-          id: { type: "string", description: "Property id, e.g. 'cedar-house'" },
+          id: {
+            type: "string",
+            description: "Property id, e.g. 'jabi-growth-corridor'",
+          },
         },
         required: ["id"],
       },
@@ -68,7 +71,7 @@ export const TOOLS: ChatCompletionTool[] = [
     function: {
       name: "show_property_card",
       description:
-        "Surface a single property as an inline visual card in the chat. Use this when recommending or referencing a specific home so the user sees it.",
+        "Surface a single land listing as an inline visual card in the chat. Use this when recommending or referencing a specific parcel so the user sees it.",
       parameters: {
         type: "object",
         properties: {
@@ -83,7 +86,7 @@ export const TOOLS: ChatCompletionTool[] = [
     function: {
       name: "save_contact",
       description:
-        "Save the user's contact information so we can follow up. Call once you have at least an email or a phone. Update the same fields with name when shared.",
+        "Save the user's contact information so the cloud9 sales agent can continue the enquiry or confirm an inspection. Call once you have at least an email or a phone. Update the same fields with name when shared.",
       parameters: {
         type: "object",
         properties: {
@@ -113,12 +116,30 @@ export const TOOLS: ChatCompletionTool[] = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "request_inspection_date",
+      description:
+        "Render a structured list of available inspection dates for the visitor to choose from. ALWAYS use this first when the visitor asks to inspect, visit, tour, view, or schedule a site visit. Do not ask for email or phone until after they choose a date.",
+      parameters: {
+        type: "object",
+        properties: {
+          propertyId: {
+            type: "string",
+            description:
+              "Optional property/listing id if the inspection request is for a specific listing.",
+          },
+        },
+      },
+    },
+  },
 ];
 
 // === implementations ===
 
 function parseUsd(price: string): number | null {
-  // Simple parse for prices like "$4,200,000" or "€2,950,000". Currency-naive.
+  // Simple parse for prices like "NGN 420,000,000". Currency-naive.
   const digits = price.replace(/[^0-9]/g, "");
   if (!digits) return null;
   return parseInt(digits, 10);
@@ -163,6 +184,7 @@ export async function runTool(
   result: unknown;
   uiCard?: { propertyId: string };
   uiContactRequest?: { field: "email" | "phone" | "name" };
+  uiInspectionDates?: { dates: InspectionDateOption[] };
 }> {
   switch (name) {
     case "list_properties": {
@@ -249,6 +271,20 @@ export async function runTool(
       };
     }
 
+    case "request_inspection_date": {
+      const propertyId =
+        typeof args.propertyId === "string" ? args.propertyId : undefined;
+      const dates = getAvailableInspectionDates();
+      return {
+        result: {
+          status: "date_options_shown",
+          propertyId,
+          dates,
+        },
+        uiInspectionDates: { dates },
+      };
+    }
+
     case "save_contact": {
       const name = (args.name as string | undefined) ?? undefined;
       const email = (args.email as string | undefined) ?? undefined;
@@ -287,6 +323,39 @@ export async function runTool(
     default:
       return { result: { error: `unknown tool ${name}` } };
   }
+}
+
+export type InspectionDateOption = {
+  value: string;
+  label: string;
+  window: string;
+};
+
+function getAvailableInspectionDates(): InspectionDateOption[] {
+  const dates: InspectionDateOption[] = [];
+  const cursor = new Date();
+  cursor.setDate(cursor.getDate() + 1);
+
+  while (dates.length < 5) {
+    const day = cursor.getDay();
+    const isSunday = day === 0;
+
+    if (!isSunday) {
+      const value = cursor.toISOString().slice(0, 10);
+      const label = new Intl.DateTimeFormat("en-NG", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        timeZone: "Africa/Lagos",
+      }).format(cursor);
+      const window = day === 6 ? "10:00 AM - 1:00 PM" : "10:00 AM - 3:00 PM";
+      dates.push({ value, label, window });
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return dates;
 }
 
 async function deliverWelcome(

@@ -67,17 +67,17 @@ export default function PropertiesTable({ initial }: { initial: Row[] }) {
   return (
     <div className="border-t border-hairline">
       <div className="hidden md:grid grid-cols-12 gap-4 py-3 text-[10px] font-mono tracking-[0.2em] uppercase text-ink-muted border-b border-hairline">
-        <div className="col-span-4">Residence</div>
+        <div className="col-span-3">Land listing</div>
         <div className="col-span-2">Price</div>
         <div className="col-span-2">Status</div>
-        <div className="col-span-2">Moods</div>
+        <div className="col-span-2">Tags</div>
         <div className="col-span-1 text-right">Interest</div>
-        <div className="col-span-1 text-right">Actions</div>
+        <div className="col-span-2 text-right">Actions</div>
       </div>
 
       {rows.length === 0 && (
         <div className="py-16 text-center font-serif italic text-ink-soft">
-          The index is empty. Add a residence to start.
+          The index is empty. Add a land listing to start.
         </div>
       )}
 
@@ -88,7 +88,7 @@ export default function PropertiesTable({ initial }: { initial: Row[] }) {
         >
           <Link
             href={`/dashboard/properties/${row.id}/edit`}
-            className="col-span-12 md:col-span-4 flex items-center gap-4 min-w-0 group"
+            className="col-span-12 md:col-span-3 flex items-center gap-4 min-w-0 group"
           >
             <div className="w-14 h-14 flex-shrink-0 bg-canvas-deep overflow-hidden">
               {row.photo && (
@@ -135,7 +135,7 @@ export default function PropertiesTable({ initial }: { initial: Row[] }) {
             </select>
           </div>
 
-          <div className="col-span-12 md:col-span-2 text-[11px] font-mono text-ink-muted">
+          <div className="col-span-12 md:col-span-2 min-w-0 break-words text-[11px] font-mono text-ink-muted">
             {row.moods.join(" · ")}
           </div>
 
@@ -143,9 +143,9 @@ export default function PropertiesTable({ initial }: { initial: Row[] }) {
             ×{row.interestCount}
           </div>
 
-          <div className="col-span-6 md:col-span-1 text-right">
+          <div className="col-span-6 md:col-span-2 min-w-0 text-right">
             {confirmId === row.id ? (
-              <div className="flex items-center justify-end gap-2 text-[10px] font-mono tracking-[0.18em] uppercase">
+              <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-[10px] font-mono tracking-[0.12em] uppercase">
                 <button
                   type="button"
                   onClick={() => remove(row.id)}
@@ -164,7 +164,7 @@ export default function PropertiesTable({ initial }: { initial: Row[] }) {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center justify-end gap-3 text-[10px] font-mono tracking-[0.18em] uppercase">
+              <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 text-[10px] font-mono tracking-[0.12em] uppercase">
                 <Link
                   href={`/dashboard/properties/${row.id}/edit`}
                   className="text-ink hover:text-accent transition-colors"

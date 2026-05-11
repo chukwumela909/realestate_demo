@@ -15,7 +15,7 @@ export default function Masthead() {
         <div className="flex items-center gap-2">
           <span className="hidden sm:inline">N°</span>
           <span className="text-ink">{count}</span>
-          <span>residences</span>
+          <span>land listings</span>
         </div>
       </div>
     </div>

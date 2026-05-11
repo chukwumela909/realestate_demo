@@ -98,7 +98,7 @@ export default async function ConversationDetail({
                 return (
                   <div key={m.id} className="self-start max-w-[75%]">
                     <div className="text-[10px] font-mono tracking-[0.18em] uppercase text-ink-muted mb-1">
-                      Concierge · {m.createdAt.toLocaleTimeString()}
+                      Sales agent · {m.createdAt.toLocaleTimeString()}
                     </div>
                     <p className="font-serif text-[15px] leading-[1.55] text-ink whitespace-pre-wrap">
                       {m.content}

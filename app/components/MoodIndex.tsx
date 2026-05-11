@@ -1,29 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { INDEX, MOODS, type Mood } from "../lib/properties";
 import Reveal from "./Reveal";
 
 export default function MoodIndex() {
   const [active, setActive] = useState<Mood | null>(null);
-  const [phase, setPhase] = useState<"in" | "out">("in");
-
   const filtered = useMemo(() => {
     if (!active) return INDEX;
     return INDEX.filter((p) => p.moods.includes(active));
   }, [active]);
-
-  // when active mood changes, trigger fade-out, swap, fade-in
-  const [displayed, setDisplayed] = useState(filtered);
-  useEffect(() => {
-    setPhase("out");
-    const t = setTimeout(() => {
-      setDisplayed(filtered);
-      setPhase("in");
-    }, 220);
-    return () => clearTimeout(t);
-  }, [filtered]);
 
   return (
     <section className="border-t border-hairline bg-canvas-deep/40">
@@ -34,7 +21,7 @@ export default function MoodIndex() {
               N° 02 — The Index
             </div>
             <h2 className="font-serif text-[36px] sm:text-[42px] lg:text-[56px] leading-[1.05] text-ink">
-              Browse by <span className="italic font-light">feeling</span>
+              Browse by <span className="italic font-light">region</span>
             </h2>
           </Reveal>
           <Reveal
@@ -42,8 +29,8 @@ export default function MoodIndex() {
             className="col-span-12 lg:col-span-5 lg:col-start-8 self-end"
           >
             <p className="font-serif italic text-[16px] sm:text-[18px] leading-[1.5] text-ink-soft">
-              Bedrooms count. So does the way a kitchen catches the morning.
-              Pick a mood; the index reorders itself.
+              Start with central and northern growth corridors, then compare
+              western and southern parcels with room for flexible plans.
             </p>
           </Reveal>
         </div>
@@ -69,21 +56,16 @@ export default function MoodIndex() {
           </div>
         </Reveal>
 
-        {displayed.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="py-24 text-center font-serif italic text-ink-soft animate-fade-in">
-            Nothing in this issue carries that mood — try another, or ask the
-            concierge.
+            Nothing in the index matches that filter yet. Try another, or ask
+            the sales agent.
           </div>
         ) : (
           <div
-            key={active ?? "all"}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14"
-            style={{
-              transition: "opacity 220ms var(--ease-maison)",
-              opacity: phase === "out" ? 0 : 1,
-            }}
           >
-            {displayed.map((p, i) => (
+            {filtered.map((p, i) => (
               <article
                 key={p.id}
                 className="group flex flex-col gap-4 animate-fade-up"

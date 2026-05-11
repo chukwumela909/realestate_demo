@@ -1,22 +1,23 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 
 export default function TopNav() {
-  const items = ["Buy", "Sell", "Journal", "Index"];
+  const items = ["Buy land", "Sell land", "Journal", "Index"];
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
       <header className="sticky top-0 z-30 bg-canvas/85 backdrop-blur-sm border-b border-hairline">
         <div className="mx-auto max-w-[1320px] px-6 lg:px-12 h-16 flex items-center justify-between">
-          <a
+          <Link
             href="/"
             className="font-serif text-[20px] sm:text-[22px] tracking-[0.18em] text-ink transition-colors duration-300 hover:text-accent"
           >
-            MAISON
-          </a>
+            cloud9
+          </Link>
 
           <nav className="hidden md:flex items-center gap-10">
             {items.map((item) => (

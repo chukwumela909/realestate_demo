@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 
 declare global {
-  // eslint-disable-next-line no-var
   var openai: OpenAI | undefined;
 }
 

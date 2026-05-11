@@ -8,12 +8,15 @@ export const ALLOWED_STATUS = [
 ] as const;
 
 export const ALLOWED_MOODS = [
-  "solitude",
-  "coastal",
-  "heirloom",
-  "urban",
-  "garden",
-  "modernist",
+  "mixed-use",
+  "central",
+  "northern",
+  "western",
+  "southern",
+  "growth",
+  "infrastructure",
+  "greenfield",
+  "premium",
 ] as const;
 
 export type PropertyImageInput = {
@@ -77,7 +80,7 @@ export function validateProperty(input: unknown): {
   const cleanedMoods = moods
     .filter((m) => ALLOWED_MOODS.includes(m as (typeof ALLOWED_MOODS)[number]))
     .filter((m, idx, arr) => arr.indexOf(m) === idx);
-  if (cleanedMoods.length === 0) errors.push("Pick at least one mood.");
+  if (cleanedMoods.length === 0) errors.push("Pick at least one tag.");
 
   const images = imagesRaw
     .flatMap<PropertyImageInput>((raw) => {

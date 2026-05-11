@@ -10,8 +10,8 @@ export default function Journal() {
             <div className="group relative aspect-[5/4] overflow-hidden bg-canvas-deep">
               <div className="card-image absolute inset-0">
                 <Image
-                  src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1600&q=80"
-                  alt="Architectural interior"
+                  src="https://commons.wikimedia.org/wiki/Special:FilePath/Beautiful%20formations%20in%20Jos%20Nigeria.jpg?width=1600"
+                  alt="Jos Plateau landscape"
                   fill
                   sizes="(max-width: 1024px) 100vw, 60vw"
                   className="object-cover"
@@ -26,19 +26,19 @@ export default function Journal() {
                 N° 03 — From the Journal
               </div>
               <h2 className="font-serif text-[32px] sm:text-[42px] lg:text-[52px] leading-[1.05] text-ink mb-5 sm:mb-6">
-                On the architecture of{" "}
-                <span className="italic font-light">staying put</span>
+                On buying land with{" "}
+                <span className="italic font-light">room to grow</span>
               </h2>
             </Reveal>
             <Reveal delay={240}>
               <p className="font-serif text-[16px] sm:text-[17px] leading-[1.65] text-ink-soft mb-4">
-                We tend to talk about a house in the language of acquisition —
-                square footage, lot lines, comparable sales. But the houses
-                worth keeping are the ones we eventually stop measuring.
+                Good land decisions begin with practical questions: access,
+                title, services, drainage, demand, and what the neighbourhood
+                can realistically become.
               </p>
               <p className="font-serif text-[16px] sm:text-[17px] leading-[1.65] text-ink-soft mb-8">
-                An essay on permanence, light, and the rooms we end up coming
-                back to.
+                A field note on mixed-use parcels across Abuja, Kaduna, Jos,
+                Ibadan, Lagos, Port Harcourt, and Calabar.
               </p>
             </Reveal>
             <Reveal delay={360}>

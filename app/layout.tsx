@@ -23,9 +23,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MAISON — Homes worth staying in.",
+  title: "cloud9 - Mixed-use land in Nigeria",
   description:
-    "A curated index of architecturally significant residences, refreshed monthly.",
+    "Friendly access to mixed-use land in central, northern, western, and southern Nigeria.",
 };
 
 export default function RootLayout({

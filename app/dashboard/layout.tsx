@@ -14,10 +14,10 @@ export default function DashboardLayout({
             href="/dashboard"
             className="font-serif text-[20px] tracking-[0.18em] text-ink hover:text-accent transition-colors"
           >
-            MAISON
+            cloud9
           </Link>
           <div className="text-[10px] font-mono tracking-[0.2em] uppercase text-ink-muted mt-1">
-            Desk
+            Land desk
           </div>
         </div>
 
@@ -31,7 +31,7 @@ export default function DashboardLayout({
             href="/"
             className="text-[11px] font-mono tracking-[0.18em] uppercase text-ink-muted hover:text-ink transition-colors"
           >
-            ← Front of house
+            ← Front site
           </Link>
         </div>
       </aside>

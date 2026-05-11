@@ -4,13 +4,13 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 const HERO_PHOTO =
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85";
+  "https://commons.wikimedia.org/wiki/Special:FilePath/Landscape%20view%20of%20abuja.jpg?width=1800";
 
 const LINES = [
-  { word: "Homes", italic: false, indent: "" },
-  { word: "worth", italic: false, indent: "" },
-  { word: "staying", italic: false, indent: "" },
-  { word: "in.", italic: true, indent: "md:pl-[44%] lg:pl-[58%]" },
+  { word: "Land", italic: false, indent: "" },
+  { word: "for", italic: false, indent: "" },
+  { word: "mixed-use", italic: false, indent: "" },
+  { word: "growth.", italic: true, indent: "md:pl-[44%] lg:pl-[58%]" },
 ];
 
 export default function Hero() {
@@ -64,9 +64,7 @@ export default function Hero() {
   return (
     <section ref={wrapRef} className="relative">
       <div className="mx-auto max-w-[1320px] px-6 lg:px-12 pt-10 sm:pt-12 lg:pt-16 pb-12 sm:pb-16 lg:pb-24">
-        {/* MOBILE: stacked. DESKTOP: two-zone overlap. */}
         <div className="md:relative md:min-h-[72vh] lg:min-h-[78vh]">
-          {/* Headline */}
           <h1
             aria-label={fullHeadline}
             className="relative z-10 font-serif tracking-[-0.025em] leading-[0.92] md:leading-[0.88] text-[56px] sm:text-[88px] md:text-[104px] lg:text-[132px] xl:text-[148px] text-ink md:mix-blend-difference md:text-white pointer-events-none"
@@ -87,7 +85,6 @@ export default function Hero() {
             ))}
           </h1>
 
-          {/* Photo — full-bleed plate on mobile, absolute on desktop */}
           <div className="relative md:absolute md:top-0 md:bottom-0 md:right-0 md:w-[58%] lg:w-[56%] aspect-[4/5] md:aspect-auto mt-8 md:mt-0 -mx-6 md:mx-0 overflow-hidden bg-canvas-deep">
             <div
               ref={photoRef}
@@ -96,7 +93,7 @@ export default function Hero() {
             >
               <Image
                 src={HERO_PHOTO}
-                alt="A residence in repose"
+                alt="Abuja landscape"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 56vw"
                 className="object-cover animate-fade-in"
@@ -104,25 +101,23 @@ export default function Hero() {
               />
             </div>
             <span className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 z-[2] flex items-center justify-between text-[10px] font-mono tracking-[0.2em] uppercase text-canvas">
-              <span>Cover · N° 047</span>
-              <span>Sonoma, CA</span>
+              <span>Cover - No. 009</span>
+              <span>Abuja FCT</span>
             </span>
           </div>
 
-          {/* Kicker */}
           <div
             className="relative md:absolute md:left-0 md:bottom-0 z-10 max-w-sm flex flex-col gap-4 mt-8 md:mt-0 animate-fade-up"
             style={{ animationDelay: `${140 + LINES.length * 110 + 80}ms` }}
           >
             <div className="h-px w-10 bg-ink" />
             <p className="font-serif italic text-ink-soft text-[16px] sm:text-[17px] lg:text-[18px] leading-[1.5]">
-              A curated index of architecturally significant residences,
-              refreshed monthly.
+              Friendly access to mixed-use land in central and northern
+              Nigeria, plus select parcels across the west and south.
             </p>
           </div>
         </div>
 
-        {/* Scroll cue */}
         <div
           className="mt-10 lg:mt-14 flex items-center justify-between border-t border-hairline pt-5 sm:pt-6 animate-fade-up"
           style={{ animationDelay: "820ms" }}
@@ -131,7 +126,7 @@ export default function Hero() {
             Scroll
           </span>
           <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted">
-            ↓ This issue
+            Available land
           </span>
         </div>
       </div>

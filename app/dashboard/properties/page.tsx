@@ -46,7 +46,7 @@ export default async function PropertiesPage() {
             href="/dashboard/properties/new"
             className="bg-ink text-canvas px-4 py-2.5 text-[11px] font-mono tracking-[0.18em] uppercase hover:bg-accent transition-colors duration-300"
           >
-            + New residence
+            + New land listing
           </Link>
         </div>
       </header>

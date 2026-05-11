@@ -160,7 +160,7 @@ export default function PropertyForm({
             type="text"
             value={name}
             onChange={(e) => updateName(e.target.value)}
-            placeholder="e.g. Cedar House"
+            placeholder="e.g. Jabi Growth Corridor"
             className={inputClass}
             required
           />
@@ -174,16 +174,16 @@ export default function PropertyForm({
               setIdTouched(true);
             }}
             disabled={mode === "edit"}
-            placeholder="cedar-house"
+            placeholder="jabi-growth-corridor"
             className={`${inputClass} ${mode === "edit" ? "opacity-60 cursor-not-allowed" : ""}`}
             required
           />
         </Field>
-        <Field label="Caption" hint="One italic-serif sentence shown beside the property.">
+        <Field label="Caption" hint="One italic-serif sentence shown beside the land listing.">
           <textarea
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            placeholder="A 1962 modernist on three quiet acres…"
+            placeholder="Mixed-use land positioned for retail frontage and apartments..."
             className={`${inputClass} min-h-[88px] resize-y`}
             required
           />
@@ -197,7 +197,7 @@ export default function PropertyForm({
               type="text"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              placeholder="$4,200,000"
+              placeholder="NGN 420,000,000"
               className={inputClass}
               required
             />
@@ -207,7 +207,7 @@ export default function PropertyForm({
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Sonoma, CA"
+              placeholder="Jabi, Abuja FCT"
               className={inputClass}
               required
             />
@@ -228,7 +228,7 @@ export default function PropertyForm({
         </Field>
       </Section>
 
-      <Section title="Moods" hint="Pick the moods that fit. The bot uses these to filter.">
+      <Section title="Tags" hint="Pick the region and development tags. The bot uses these to filter.">
         <div className="flex flex-wrap gap-2">
           {ALLOWED_MOODS.map((m) => {
             const active = moods.includes(m);
@@ -252,7 +252,7 @@ export default function PropertyForm({
 
       <Section
         title="Images"
-        hint="At least one. Pick which is primary — that's the photo used in cards and lists."
+        hint="At least one. Pick which is primary - that's the photo used in cards and lists."
       >
         <div className="flex flex-col gap-3">
           {images.map((img, idx) => (
@@ -274,7 +274,7 @@ export default function PropertyForm({
               <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <input
                   type="url"
-                  placeholder="https://images.unsplash.com/…"
+                  placeholder="https://commons.wikimedia.org/..."
                   value={img.url}
                   onChange={(e) => updateImage(idx, { url: e.target.value })}
                   className={inputClass}
@@ -350,7 +350,7 @@ export default function PropertyForm({
           disabled={busy}
           className="bg-ink text-canvas px-6 py-3 text-[12px] font-mono tracking-[0.18em] uppercase hover:bg-accent transition-colors duration-300 disabled:opacity-50"
         >
-          {busy ? "Saving…" : mode === "create" ? "Create residence" : "Save changes"}
+          {busy ? "Saving..." : mode === "create" ? "Create land listing" : "Save changes"}
         </button>
       </div>
     </form>

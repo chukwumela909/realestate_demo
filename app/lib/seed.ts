@@ -3,16 +3,32 @@ import { PROPERTIES_SEED } from "./seedData";
 
 let seedingPromise: Promise<void> | null = null;
 
+const LEGACY_SEED_IDS = [
+  "cedar-house",
+  "loft-04",
+  "the-annex",
+  "long-shore",
+  "field-house",
+  "the-glasshouse",
+  "rue-saint-paul",
+  "cove-cottage",
+  "atelier-46",
+  "white-pine",
+  "harbor-row",
+];
+
 export async function ensureSeeded() {
   if (seedingPromise) return seedingPromise;
 
   seedingPromise = (async () => {
-    const count = await prisma.property.count();
-    if (count > 0) return;
+    await prisma.property.deleteMany({
+      where: { id: { in: LEGACY_SEED_IDS } },
+    });
 
     for (const p of PROPERTIES_SEED) {
-      await prisma.property.create({
-        data: {
+      await prisma.property.upsert({
+        where: { id: p.id },
+        create: {
           id: p.id,
           name: p.name,
           caption: p.caption,
@@ -30,9 +46,27 @@ export async function ensureSeeded() {
             })),
           },
         },
+        update: {
+          name: p.name,
+          caption: p.caption,
+          price: p.price,
+          location: p.location,
+          moods: JSON.stringify(p.moods),
+          status: p.status ?? "available",
+          available: p.available ?? true,
+          images: {
+            deleteMany: {},
+            create: p.images.map((img, idx) => ({
+              url: img.url,
+              alt: img.alt ?? p.name,
+              order: idx,
+              isPrimary: img.isPrimary ?? idx === 0,
+            })),
+          },
+        },
       });
     }
-    console.log(`[seed] inserted ${PROPERTIES_SEED.length} properties`);
+    console.log(`[seed] synced ${PROPERTIES_SEED.length} cloud9 land listings`);
   })().finally(() => {
     seedingPromise = null;
   });

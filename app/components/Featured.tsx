@@ -11,10 +11,10 @@ export default function Featured() {
         <div className="flex items-end justify-between mb-10 sm:mb-12 lg:mb-16">
           <Reveal>
             <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-3">
-              N° 01 — This issue
+              N° 01 — Central and northern Nigeria
             </div>
             <h2 className="font-serif text-[36px] sm:text-[42px] lg:text-[56px] leading-[1.05] text-ink">
-              Featured <span className="italic font-light">residences</span>
+              Featured <span className="italic font-light">land</span>
             </h2>
           </Reveal>
           <Reveal delay={120}>

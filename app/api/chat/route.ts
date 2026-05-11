@@ -9,7 +9,7 @@ import { prisma } from "../../lib/prisma";
 import { ensureSeeded } from "../../lib/seed";
 import { getOrCreateSession } from "../../lib/session";
 import { SYSTEM_PROMPT } from "../../lib/systemPrompt";
-import { TOOLS, runTool } from "../../lib/tools";
+import { TOOLS, runTool, type InspectionDateOption } from "../../lib/tools";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,6 +20,7 @@ type SseEvent =
   | { type: "delta"; text: string }
   | { type: "card"; propertyId: string }
   | { type: "contact_request"; field: "email" | "phone" | "name" }
+  | { type: "inspection_dates"; dates: InspectionDateOption[] }
   | { type: "tool_call"; name: string }
   | { type: "tool_done"; name: string }
   | { type: "done" }
@@ -241,11 +242,8 @@ export async function POST(req: NextRequest) {
               parsedArgs = {};
             }
 
-            const { result, uiCard, uiContactRequest } = await runTool(
-              tc.name,
-              parsedArgs,
-              session.id,
-            );
+            const { result, uiCard, uiContactRequest, uiInspectionDates } =
+              await runTool(tc.name, parsedArgs, session.id);
 
             const resultText = JSON.stringify(result);
 
@@ -269,6 +267,8 @@ export async function POST(req: NextRequest) {
             if (uiCard) send({ type: "card", propertyId: uiCard.propertyId });
             if (uiContactRequest)
               send({ type: "contact_request", field: uiContactRequest.field });
+            if (uiInspectionDates)
+              send({ type: "inspection_dates", dates: uiInspectionDates.dates });
             send({ type: "tool_done", name: tc.name });
           }
 
