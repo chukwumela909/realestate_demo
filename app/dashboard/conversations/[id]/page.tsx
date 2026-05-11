@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "../../../lib/prisma";
+import DeleteConversationButton from "./DeleteConversationButton";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,9 @@ export default async function ConversationDetail({
             <div className="text-right text-[11px] font-mono tracking-[0.06em] text-ink-muted">
               <div>Started {session.createdAt.toLocaleString()}</div>
               <div>Updated {session.updatedAt.toLocaleString()}</div>
+              <div className="mt-3">
+                <DeleteConversationButton id={session.id} label={label} />
+              </div>
             </div>
           </header>
 
