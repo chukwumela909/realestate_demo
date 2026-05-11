@@ -8,15 +8,12 @@ export const ALLOWED_STATUS = [
 ] as const;
 
 export const ALLOWED_MOODS = [
-  "mixed-use",
-  "central",
-  "northern",
-  "western",
-  "southern",
-  "growth",
-  "infrastructure",
-  "greenfield",
-  "premium",
+  "pearl-residence",
+  "gwagwalada",
+  "investment",
+  "residential",
+  "affordable",
+  "bulk-investor",
 ] as const;
 
 export type PropertyImageInput = {

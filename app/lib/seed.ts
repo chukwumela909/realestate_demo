@@ -15,6 +15,18 @@ const LEGACY_SEED_IDS = [
   "atelier-46",
   "white-pine",
   "harbor-row",
+  "jabi-growth-corridor",
+  "guzape-hillside-parcels",
+  "karu-nasarawa-link",
+  "kaduna-rail-hub",
+  "kano-commerce-edge",
+  "jos-plateau-view",
+  "minna-campus-belt",
+  "lokoja-confluence-acreage",
+  "epe-lagoon-extension",
+  "ibadan-north-gateway",
+  "port-harcourt-green-belt",
+  "calabar-river-parcels",
 ];
 
 export async function ensureSeeded() {
@@ -66,7 +78,7 @@ export async function ensureSeeded() {
         },
       });
     }
-    console.log(`[seed] synced ${PROPERTIES_SEED.length} cloud9 land listings`);
+    console.log(`[seed] synced ${PROPERTIES_SEED.length} Cloud9 plot options`);
   })().finally(() => {
     seedingPromise = null;
   });

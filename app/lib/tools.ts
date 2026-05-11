@@ -10,21 +10,21 @@ export const TOOLS: ChatCompletionTool[] = [
     function: {
       name: "list_properties",
       description:
-        "List land listings in the index. Optionally filter by mood/region tag, by status, or by a max price in NGN. Returns a small summary list - call get_property for details.",
+        "List Cloud9 Pearl Residence Phase 2 plot options. Optionally filter by tag, by status, or by a max price in NGN. Returns a small summary list - call get_property for details.",
       parameters: {
         type: "object",
         properties: {
           mood: {
             type: "string",
             description:
-              "Optional mood/region filter - one of: mixed-use, central, northern, western, southern, growth, infrastructure, greenfield, premium",
+              "Optional tag filter - one of: pearl-residence, gwagwalada, investment, residential, affordable, bulk-investor",
           },
           status: {
             type: "string",
             description:
               "Optional status filter — one of: available, under_offer, reserved, sold. Defaults to available.",
           },
-          maxPriceUsd: {
+          maxPriceNgn: {
             type: "number",
             description:
               "Optional max price in NGN. Best-effort numeric parse of the listed price.",
@@ -71,7 +71,7 @@ export const TOOLS: ChatCompletionTool[] = [
     function: {
       name: "show_property_card",
       description:
-        "Surface a single land listing as an inline visual card in the chat. Use this when recommending or referencing a specific parcel so the user sees it.",
+        "Surface a single Cloud9 plot option as an inline visual card in the chat. Use this when recommending or referencing a specific plot so the user sees it.",
       parameters: {
         type: "object",
         properties: {
@@ -86,7 +86,7 @@ export const TOOLS: ChatCompletionTool[] = [
     function: {
       name: "save_contact",
       description:
-        "Save the user's contact information so the cloud9 sales agent can continue the enquiry or confirm an inspection. Call once you have at least an email or a phone. Update the same fields with name when shared.",
+        "Save the user's contact information so the Cloud9 sales representative can continue the enquiry, reservation follow-up, or inspection confirmation. Update the same fields with name when shared.",
       parameters: {
         type: "object",
         properties: {
@@ -138,7 +138,7 @@ export const TOOLS: ChatCompletionTool[] = [
 
 // === implementations ===
 
-function parseUsd(price: string): number | null {
+function parseNgn(price: string): number | null {
   // Simple parse for prices like "NGN 420,000,000". Currency-naive.
   const digits = price.replace(/[^0-9]/g, "");
   if (!digits) return null;
@@ -213,10 +213,13 @@ export async function runTool(
         filtered = filtered.filter((p) => p.moods.includes(args.mood as string));
       }
 
-      if (args.maxPriceUsd && typeof args.maxPriceUsd === "number") {
+      const maxPrice =
+        typeof args.maxPriceNgn === "number" ? args.maxPriceNgn : null;
+
+      if (maxPrice !== null) {
         filtered = filtered.filter((p) => {
-          const n = parseUsd(p.price);
-          return n !== null && n <= (args.maxPriceUsd as number);
+          const n = parseNgn(p.price);
+          return n !== null && n <= maxPrice;
         });
       }
 

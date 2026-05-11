@@ -5,11 +5,11 @@ import { useEffect } from "react";
 type Item = { label: string; number: string };
 
 const ITEMS: Item[] = [
-  { number: "01", label: "Buy land" },
-  { number: "02", label: "Sell land" },
-  { number: "03", label: "Journal" },
-  { number: "04", label: "Index" },
-  { number: "05", label: "Sales agent" },
+  { number: "01", label: "Pearl Residence" },
+  { number: "02", label: "Plot options" },
+  { number: "03", label: "FAQ" },
+  { number: "04", label: "Services" },
+  { number: "05", label: "Sales rep" },
 ];
 
 export default function MobileMenu({
@@ -79,7 +79,7 @@ export default function MobileMenu({
                     {item.label}
                   </span>
                   <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-ink-muted">
-                    N° {item.number}
+                    No. {item.number}
                   </span>
                 </a>
               </li>
@@ -87,19 +87,19 @@ export default function MobileMenu({
           </ul>
 
           <div className="mt-14 pt-8 border-t border-hairline flex items-center justify-between text-[11px] font-mono tracking-[0.2em] uppercase">
-            <span className="text-ink-muted">EN · NGN</span>
+            <span className="text-ink-muted">EN / NGN</span>
             <a
               href="#"
               onClick={onClose}
               className="text-ink hover:text-accent transition-colors"
             >
-              Sign in →
+              Contact
             </a>
           </div>
 
           <p className="mt-10 font-serif italic text-[15px] leading-[1.6] text-ink-soft max-w-xs">
-            Mixed-use land across central, northern, western, and southern
-            Nigeria.
+            Verified Cloud9 Pearl Residence Phase 2 plots in Gwagwalada,
+            Abuja.
           </p>
         </nav>
       </div>

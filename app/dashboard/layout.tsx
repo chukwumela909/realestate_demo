@@ -17,7 +17,7 @@ export default function DashboardLayout({
             cloud9
           </Link>
           <div className="text-[10px] font-mono tracking-[0.2em] uppercase text-ink-muted mt-1">
-            Land desk
+            Pearls desk
           </div>
         </div>
 

@@ -4,13 +4,13 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 const HERO_PHOTO =
-  "https://commons.wikimedia.org/wiki/Special:FilePath/Landscape%20view%20of%20abuja.jpg?width=1800";
+  "https://cloud9propertieslimited.com/wp-content/uploads/2025/10/three-dimensional-house-model-1.png";
 
 const LINES = [
-  { word: "Land", italic: false, indent: "" },
-  { word: "for", italic: false, indent: "" },
-  { word: "mixed-use", italic: false, indent: "" },
-  { word: "growth.", italic: true, indent: "md:pl-[44%] lg:pl-[58%]" },
+  { word: "Own", italic: false, indent: "" },
+  { word: "a piece", italic: false, indent: "" },
+  { word: "of Abuja's", italic: false, indent: "" },
+  { word: "future.", italic: true, indent: "md:pl-[44%] lg:pl-[58%]" },
 ];
 
 export default function Hero() {
@@ -93,7 +93,7 @@ export default function Hero() {
             >
               <Image
                 src={HERO_PHOTO}
-                alt="Abuja landscape"
+                alt="Cloud9 Pearl Residence Phase 2"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 56vw"
                 className="object-cover animate-fade-in"
@@ -101,8 +101,8 @@ export default function Hero() {
               />
             </div>
             <span className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 z-[2] flex items-center justify-between text-[10px] font-mono tracking-[0.2em] uppercase text-canvas">
-              <span>Cover - No. 009</span>
-              <span>Abuja FCT</span>
+              <span>Pearl Residence</span>
+              <span>Gwagwalada</span>
             </span>
           </div>
 
@@ -112,8 +112,8 @@ export default function Hero() {
           >
             <div className="h-px w-10 bg-ink" />
             <p className="font-serif italic text-ink-soft text-[16px] sm:text-[17px] lg:text-[18px] leading-[1.5]">
-              Friendly access to mixed-use land in central and northern
-              Nigeria, plus select parcels across the west and south.
+              Verified plot options in Cloud9 Pearl Residence Phase 2, built
+              for home buyers, first-time investors, and long-term land banking.
             </p>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function Hero() {
             Scroll
           </span>
           <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted">
-            Available land
+            Available plots
           </span>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 
 export default function TopNav() {
-  const items = ["Buy land", "Sell land", "Journal", "Index"];
+  const items = ["Pearl Residence", "Plot options", "Services", "Contact"];
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -43,7 +43,7 @@ export default function TopNav() {
               href="#"
               className="hidden sm:inline text-[13px] tracking-[0.06em] text-ink hover:text-accent transition-colors duration-300"
             >
-              Sign in
+              Contact
             </a>
             <button
               type="button"

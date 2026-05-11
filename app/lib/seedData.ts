@@ -1,10 +1,4 @@
-// Seed source-of-truth for cloud9 land listings.
-// Each listing gets a primary location image + 2 gallery shots.
-
-const commons = (filename: string, w = 1600) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(
-    filename,
-  )}?width=${w}`;
+// Seed source-of-truth for Cloud9 Pearl Residence Phase 2 plot options.
 
 export type SeedProperty = {
   id: string;
@@ -12,196 +6,103 @@ export type SeedProperty = {
   caption: string;
   price: string;
   location: string;
-  moods: string[]; // serialised to JSON in DB
+  moods: string[];
   status?: string;
   available?: boolean;
   images: { url: string; alt?: string; isPrimary?: boolean }[];
 };
 
-const gallery = {
-  abuja: [
-    commons("Landscape view of abuja.jpg", 1800),
-    commons("Abuja landscape view.jpg", 1400),
-    commons(
-      "Lithium mine showing the beautiful landscape of Takushara village in Abuja, Nigeria.jpg",
-      1400,
-    ),
-  ],
-  kaduna: [
-    commons("A landscape farm in Kadpoly, Sabon Tasha Campus. Kaduna, Nigeria 🇳🇬.jpg", 1800),
-    commons("Landscape view of abuja.jpg", 1400),
-    commons("Beautiful formations in Jos Nigeria.jpg", 1400),
-  ],
-  plateau: [
-    commons("Beautiful formations in Jos Nigeria.jpg", 1800),
-    commons(
-      "ASC Leiden - Rietveld Collection - Nigeria 1970 - 1973 - 01 - 029 The Jos plateau. Landscape with a rocky hillside along the road - Jos Plateau.jpg",
-      1400,
-    ),
-    commons("Landscape view of abuja.jpg", 1400),
-  ],
-  ibadan: [
-    commons("Overview Ibadan, Nigeria.jpg", 1800),
-    commons("Ibadan, Nigeria.jpg", 1400),
-    commons("Area In Ibadan, Nigeria.jpg", 1400),
-  ],
-  lagos: [
-    commons("Lagos, Nigeria.jpg", 1800),
-    commons("Overview Ibadan, Nigeria.jpg", 1400),
-    commons("Area In Ibadan, Nigeria.jpg", 1400),
-  ],
-  portHarcourt: [
-    commons("Rain forest Port Harcourt, Nigeria.jpg", 1800),
-    commons("Marina Resort, Calabar.jpg", 1400),
-    commons("Kwa Falls Calabar 37.jpg", 1400),
-  ],
-  calabar: [
-    commons("Marina Resort, Calabar.jpg", 1800),
-    commons("Kwa Falls Calabar 37.jpg", 1400),
-    commons("Obudu mountain cattle ranch,calabar Nigeria.jpg", 1400),
-  ],
+const projectImage = (path: string) =>
+  `https://cloud9propertieslimited.com/wp-content/uploads/${path}`;
+
+const projectGallery = {
+  model: projectImage("2025/10/three-dimensional-house-model-1.png"),
+  plot400: projectImage(
+    "elementor/thumbs/images-7-1-rd1xj3ci8epx05mn23qsaqv02mazjx7zdcpjul2kwg.jpg",
+  ),
+  plot200: projectImage(
+    "elementor/thumbs/images-8-1-rd1xk24j9a1ixq84f0rzd0321vjkgq21u4uiltn0i8.jpg",
+  ),
+  plot165: projectImage(
+    "elementor/thumbs/Nigerian-Land-Sizes-and-Measurement-1024x682-1-rd1qz31c8xn3wug06l60qsvikrk7vta7x7vmyh0574.jpg",
+  ),
+  acre: projectImage(
+    "elementor/thumbs/images-11-rd1wv95uwo34k6979asek9f5ptsvc9l1rd38oyf0pc.jpg",
+  ),
 };
 
-const images = (urls: string[], alt: string) =>
-  urls.map((url, index) => ({
-    url,
-    alt: `${alt} ${index + 1}`,
-    isPrimary: index === 0,
-  }));
+const images = (primary: string, alt: string) => [
+  { url: primary, alt, isPrimary: true },
+  { url: projectGallery.model, alt: "Cloud9 Pearl Residence Phase 2 project model" },
+];
 
 export const PROPERTIES_SEED: SeedProperty[] = [
   {
-    id: "jabi-growth-corridor",
-    name: "Jabi Growth Corridor",
+    id: "pearl-residence-400-sqm",
+    name: "400 SQM Plot",
     caption:
-      "Mixed-use land positioned for retail frontage, apartments, and everyday access into central Abuja.",
-    price: "NGN 420,000,000",
-    location: "Jabi, Abuja FCT",
-    moods: ["mixed-use", "central", "infrastructure"],
-    images: images(gallery.abuja, "Jabi Abuja mixed-use land"),
+      "Perfect for investors seeking space for family homes or duplex developments, with strong resale and rental potential in fast-developing Gwagwalada.",
+    price: "NGN 4,000,000",
+    location: "Cloud9 Pearl Residence Phase 2, Gwagwalada, Abuja",
+    moods: ["pearl-residence", "gwagwalada", "investment", "residential"],
+    images: images(projectGallery.plot400, "Cloud9 Pearl Residence 400 SQM Plot"),
   },
   {
-    id: "guzape-hillside-parcels",
-    name: "Guzape Hillside Parcels",
+    id: "pearl-residence-200-sqm",
+    name: "200 SQM Plot",
     caption:
-      "A serviced hillside holding for low-rise apartments, workspaces, and quiet residential streets.",
-    price: "NGN 680,000,000",
-    location: "Guzape, Abuja FCT",
-    moods: ["mixed-use", "premium", "central"],
-    images: images(gallery.abuja, "Guzape Abuja hillside land"),
+      "An ideal entry point for first-time investors or buyers who want a smaller plot within a prime estate. Flexible payment options are available.",
+    price: "NGN 2,500,000",
+    location: "Cloud9 Pearl Residence Phase 2, Gwagwalada, Abuja",
+    moods: [
+      "pearl-residence",
+      "gwagwalada",
+      "investment",
+      "residential",
+      "affordable",
+    ],
+    images: images(projectGallery.plot200, "Cloud9 Pearl Residence 200 SQM Plot"),
   },
   {
-    id: "karu-nasarawa-link",
-    name: "Karu-Nasarawa Link",
+    id: "pearl-residence-165-sqm",
+    name: "165 SQM Plot",
     caption:
-      "Accessible development land on the Abuja-Nasarawa growth path, ready for a neighbourhood-scale scheme.",
-    price: "NGN 155,000,000",
-    location: "Karu, Nasarawa",
-    moods: ["mixed-use", "growth", "infrastructure"],
-    images: images(gallery.abuja, "Karu Nasarawa land"),
+      "Compact and affordable, suited to young professionals and investors who want to start small in a verified, high-demand location.",
+    price: "NGN 1,500,000",
+    location: "Cloud9 Pearl Residence Phase 2, Gwagwalada, Abuja",
+    moods: [
+      "pearl-residence",
+      "gwagwalada",
+      "investment",
+      "residential",
+      "affordable",
+    ],
+    images: images(projectGallery.plot165, "Cloud9 Pearl Residence 165 SQM Plot"),
   },
   {
-    id: "kaduna-rail-hub",
-    name: "Kaduna Rail Hub",
+    id: "pearl-residence-1-acre",
+    name: "1 Acre",
     caption:
-      "A practical parcel for shops, compact offices, and residential blocks close to Kaduna's mobility spine.",
-    price: "NGN 210,000,000",
-    location: "Rigasa, Kaduna",
-    moods: ["mixed-use", "northern", "infrastructure"],
-    images: images(gallery.kaduna, "Kaduna mixed-use land"),
-  },
-  {
-    id: "kano-commerce-edge",
-    name: "Kano Commerce Edge",
-    caption:
-      "Commercially minded land for warehousing, market-facing retail, and apartments serving Kano's trade routes.",
-    price: "NGN 260,000,000",
-    location: "Kumbotso, Kano",
-    moods: ["mixed-use", "northern", "growth"],
-    images: images(gallery.kaduna, "Kano commercial land"),
-  },
-  {
-    id: "jos-plateau-view",
-    name: "Jos Plateau View",
-    caption:
-      "Cool-climate development land suited to hospitality, residential plots, and small-format destination retail.",
-    price: "NGN 135,000,000",
-    location: "Rayfield, Jos, Plateau",
-    moods: ["mixed-use", "northern", "greenfield"],
-    images: images(gallery.plateau, "Jos Plateau mixed-use land"),
-  },
-  {
-    id: "minna-campus-belt",
-    name: "Minna Campus Belt",
-    caption:
-      "Neighbourhood land for student housing, convenience retail, and everyday services in a steady demand pocket.",
-    price: "NGN 118,000,000",
-    location: "Bosso, Minna, Niger",
-    moods: ["mixed-use", "central", "growth"],
-    images: images(gallery.kaduna, "Minna development land"),
-  },
-  {
-    id: "lokoja-confluence-acreage",
-    name: "Lokoja Confluence Acreage",
-    caption:
-      "Broad land with room for a flexible estate plan near one of central Nigeria's strongest logistics crossings.",
-    price: "NGN 190,000,000",
-    location: "Felele, Lokoja, Kogi",
-    moods: ["mixed-use", "central", "greenfield"],
-    images: images(gallery.plateau, "Lokoja mixed-use acreage"),
-  },
-  {
-    id: "epe-lagoon-extension",
-    name: "Epe Lagoon Extension",
-    caption:
-      "Western Nigeria land for a measured estate, light commerce, and long-horizon value around the Lekki-Epe axis.",
-    price: "NGN 310,000,000",
-    location: "Epe, Lagos",
-    moods: ["mixed-use", "western", "growth"],
-    images: images(gallery.lagos, "Epe Lagos landed property"),
-  },
-  {
-    id: "ibadan-north-gateway",
-    name: "Ibadan North Gateway",
-    caption:
-      "A friendly entry point for townhouse plots, corner shops, and office suites in a mature western city.",
-    price: "NGN 175,000,000",
-    location: "Moniya, Ibadan, Oyo",
-    moods: ["mixed-use", "western", "infrastructure"],
-    images: images(gallery.ibadan, "Ibadan mixed-use land"),
-  },
-  {
-    id: "port-harcourt-green-belt",
-    name: "Port Harcourt Green Belt",
-    caption:
-      "Southern Nigeria land for a balanced estate plan with retail services and generous green edges.",
-    price: "NGN 240,000,000",
-    location: "Eleme Road, Port Harcourt, Rivers",
-    moods: ["mixed-use", "southern", "greenfield"],
-    images: images(gallery.portHarcourt, "Port Harcourt landed property"),
-  },
-  {
-    id: "calabar-river-parcels",
-    name: "Calabar River Parcels",
-    caption:
-      "Scenic southern land for hospitality-led development, waterfront commerce, and low-density residential plots.",
-    price: "NGN 165,000,000",
-    location: "Calabar, Cross River",
-    moods: ["mixed-use", "southern", "greenfield"],
-    images: images(gallery.calabar, "Calabar mixed-use land"),
+      "A larger holding for bulk investors or developers, suitable for mini-estates, mixed-use planning, or long-term land banking.",
+    price: "NGN 20,000,000",
+    location: "Cloud9 Pearl Residence Phase 2, Gwagwalada, Abuja",
+    moods: [
+      "pearl-residence",
+      "gwagwalada",
+      "investment",
+      "bulk-investor",
+    ],
+    images: images(projectGallery.acre, "Cloud9 Pearl Residence 1 Acre"),
   },
 ];
 
 export const MOODS_LIST = [
-  "mixed-use",
-  "central",
-  "northern",
-  "western",
-  "southern",
-  "growth",
-  "infrastructure",
-  "greenfield",
-  "premium",
+  "pearl-residence",
+  "gwagwalada",
+  "investment",
+  "residential",
+  "affordable",
+  "bulk-investor",
 ] as const;
 
 export type Mood = (typeof MOODS_LIST)[number];

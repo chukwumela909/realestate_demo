@@ -160,7 +160,7 @@ export default function PropertyForm({
             type="text"
             value={name}
             onChange={(e) => updateName(e.target.value)}
-            placeholder="e.g. Jabi Growth Corridor"
+            placeholder="e.g. 400 SQM Plot"
             className={inputClass}
             required
           />
@@ -179,11 +179,11 @@ export default function PropertyForm({
             required
           />
         </Field>
-        <Field label="Caption" hint="One italic-serif sentence shown beside the land listing.">
+        <Field label="Caption" hint="One italic-serif sentence shown beside the plot option.">
           <textarea
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            placeholder="Mixed-use land positioned for retail frontage and apartments..."
+            placeholder="Verified Pearl Residence plot for home buyers and investors..."
             className={`${inputClass} min-h-[88px] resize-y`}
             required
           />
@@ -207,7 +207,7 @@ export default function PropertyForm({
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Jabi, Abuja FCT"
+              placeholder="Cloud9 Pearl Residence Phase 2, Gwagwalada, Abuja"
               className={inputClass}
               required
             />
@@ -350,7 +350,7 @@ export default function PropertyForm({
           disabled={busy}
           className="bg-ink text-canvas px-6 py-3 text-[12px] font-mono tracking-[0.18em] uppercase hover:bg-accent transition-colors duration-300 disabled:opacity-50"
         >
-          {busy ? "Saving..." : mode === "create" ? "Create land listing" : "Save changes"}
+          {busy ? "Saving..." : mode === "create" ? "Create plot option" : "Save changes"}
         </button>
       </div>
     </form>

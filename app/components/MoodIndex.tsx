@@ -18,10 +18,10 @@ export default function MoodIndex() {
         <div className="grid grid-cols-12 gap-6 mb-10 sm:mb-12 lg:mb-16">
           <Reveal className="col-span-12 lg:col-span-6">
             <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-3">
-              N° 02 — The Index
+              No. 02 - The Index
             </div>
             <h2 className="font-serif text-[36px] sm:text-[42px] lg:text-[56px] leading-[1.05] text-ink">
-              Browse by <span className="italic font-light">region</span>
+              Browse by <span className="italic font-light">fit</span>
             </h2>
           </Reveal>
           <Reveal
@@ -29,8 +29,8 @@ export default function MoodIndex() {
             className="col-span-12 lg:col-span-5 lg:col-start-8 self-end"
           >
             <p className="font-serif italic text-[16px] sm:text-[18px] leading-[1.5] text-ink-soft">
-              Start with central and northern growth corridors, then compare
-              western and southern parcels with room for flexible plans.
+              Compare Pearl Residence plot sizes by budget, use case, and
+              investment style in Gwagwalada&apos;s fast-growing property zone.
             </p>
           </Reveal>
         </div>
@@ -38,7 +38,7 @@ export default function MoodIndex() {
         <Reveal delay={120}>
           <div className="flex flex-wrap items-center gap-x-2 gap-y-3 mb-10 sm:mb-12 pb-6 border-b border-hairline">
             <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mr-2 sm:mr-3 w-full sm:w-auto mb-1 sm:mb-0">
-              Filter ·
+              Filter
             </span>
             <MoodChip
               label="all"
@@ -59,12 +59,10 @@ export default function MoodIndex() {
         {filtered.length === 0 ? (
           <div className="py-24 text-center font-serif italic text-ink-soft animate-fade-in">
             Nothing in the index matches that filter yet. Try another, or ask
-            the sales agent.
+            the Cloud9 sales representative.
           </div>
         ) : (
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
             {filtered.map((p, i) => (
               <article
                 key={p.id}
@@ -89,7 +87,7 @@ export default function MoodIndex() {
                       aria-hidden
                       className="arrow-in text-ink-soft text-[15px]"
                     >
-                      →
+                      -
                     </span>
                   </h3>
                   <p className="caption-dim font-serif italic text-ink-soft text-[15px] leading-[1.5]">
@@ -123,11 +121,7 @@ function MoodChip({
     <button
       onClick={onClick}
       className={`relative px-4 py-2.5 min-h-[40px] text-[14px] sm:text-[13px] font-serif italic transition-colors duration-300
-        ${
-          active
-            ? "text-canvas bg-ink"
-            : "text-ink-soft hover:text-ink"
-        }`}
+        ${active ? "text-canvas bg-ink" : "text-ink-soft hover:text-ink"}`}
     >
       {label}
     </button>

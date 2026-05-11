@@ -67,7 +67,7 @@ export default function PropertiesTable({ initial }: { initial: Row[] }) {
   return (
     <div className="border-t border-hairline">
       <div className="hidden md:grid grid-cols-12 gap-4 py-3 text-[10px] font-mono tracking-[0.2em] uppercase text-ink-muted border-b border-hairline">
-        <div className="col-span-3">Land listing</div>
+        <div className="col-span-3">Plot option</div>
         <div className="col-span-2">Price</div>
         <div className="col-span-2">Status</div>
         <div className="col-span-2">Tags</div>
@@ -77,7 +77,7 @@ export default function PropertiesTable({ initial }: { initial: Row[] }) {
 
       {rows.length === 0 && (
         <div className="py-16 text-center font-serif italic text-ink-soft">
-          The index is empty. Add a land listing to start.
+          The index is empty. Add a plot option to start.
         </div>
       )}
 

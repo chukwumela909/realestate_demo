@@ -23,9 +23,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "cloud9 - Mixed-use land in Nigeria",
+  title: "Cloud9 Properties Limited - Pearl Residence Phase 2",
   description:
-    "Friendly access to mixed-use land in central, northern, western, and southern Nigeria.",
+    "Verified Cloud9 Pearl Residence Phase 2 plot options in Gwagwalada, Abuja.",
 };
 
 export default function RootLayout({

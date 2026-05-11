@@ -31,35 +31,21 @@ export const ALL_PROPERTIES: Property[] = PROPERTIES_SEED.map(toProperty);
 
 export const FEATURED: Property[] = ALL_PROPERTIES.slice(0, 3);
 
-export const INDEX: Property[] = ALL_PROPERTIES.slice(3);
+export const INDEX: Property[] = ALL_PROPERTIES;
 
 export const AGENTS: { id: string; name: string; title: string; photo: string }[] = [
   {
-    id: "amina",
-    name: "Amina Bello",
-    title: "Central Nigeria sales agent",
+    id: "ibrahim-quassim",
+    name: "Ibrahim Quassim",
+    title: "Chief Executive Officer",
     photo:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80",
+      "https://cloud9propertieslimited.com/wp-content/uploads/elementor/thumbs/Frame-1-rd0cqq97j2efe5qs2l3phyjhm0suad36927291mens.webp",
   },
   {
-    id: "musa",
-    name: "Musa Danladi",
-    title: "Northern corridor sales agent",
+    id: "ojewale-omotayo-loveth",
+    name: "Ojewale Omotayo Loveth",
+    title: "Chief Operating Officer",
     photo:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    id: "tola",
-    name: "Tola Adeyemi",
-    title: "Western land desk",
-    photo:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    id: "ngozi",
-    name: "Ngozi Okafor",
-    title: "Southern land desk",
-    photo:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80",
+      "https://cloud9propertieslimited.com/wp-content/uploads/elementor/thumbs/Frame-rd0cpjygzisivpg7xkthvr7qvolbnzf938u7nld4fs.webp",
   },
 ];

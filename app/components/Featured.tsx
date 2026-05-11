@@ -11,10 +11,10 @@ export default function Featured() {
         <div className="flex items-end justify-between mb-10 sm:mb-12 lg:mb-16">
           <Reveal>
             <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-ink-muted mb-3">
-              N° 01 — Central and northern Nigeria
+              No. 01 - Pearl Residence
             </div>
             <h2 className="font-serif text-[36px] sm:text-[42px] lg:text-[56px] leading-[1.05] text-ink">
-              Featured <span className="italic font-light">land</span>
+              Featured <span className="italic font-light">plots</span>
             </h2>
           </Reveal>
           <Reveal delay={120}>
@@ -22,7 +22,7 @@ export default function Featured() {
               href="#"
               className="hidden md:inline text-[11px] font-mono tracking-[0.2em] uppercase text-ink hover:text-accent transition-colors"
             >
-              View all →
+              View all
             </a>
           </Reveal>
         </div>
@@ -31,14 +31,12 @@ export default function Featured() {
           <Reveal delay={60} className="col-span-12 lg:col-span-7 flex">
             <FeaturedCard property={hero} variant="hero" />
           </Reveal>
-          {/* Mobile: offset right.  Desktop: 3-col split */}
           <Reveal
             delay={180}
             className="col-span-12 pl-8 sm:pl-12 md:pl-0 md:col-span-7 lg:col-span-3 flex"
           >
             <FeaturedCard property={tall} variant="tall" />
           </Reveal>
-          {/* Mobile: offset left. */}
           <Reveal
             delay={300}
             className="col-span-12 pr-8 sm:pr-12 md:pr-0 md:col-span-5 lg:col-span-2 flex"
@@ -52,7 +50,7 @@ export default function Featured() {
             href="#"
             className="md:hidden mt-12 inline-flex items-center gap-2 text-[11px] font-mono tracking-[0.2em] uppercase text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors"
           >
-            View all →
+            View all
           </a>
         </Reveal>
       </div>
@@ -113,7 +111,7 @@ function FeaturedCard({
               isHero ? "text-[20px] sm:text-[24px]" : "text-[15px] sm:text-[16px]"
             }`}
           >
-            →
+            -
           </span>
         </h3>
 

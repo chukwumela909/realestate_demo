@@ -25,9 +25,9 @@ type Turn = {
 };
 
 const SUGGESTED = [
-  "Mixed-use land around Abuja",
-  "Northern Nigeria parcels under NGN 250M",
-  "Western and southern land options",
+  "Show me Pearls Residence plot options",
+  "Can I pay in installments?",
+  "I want to reserve a plot",
 ];
 
 const RING_IDLE = 18;
@@ -268,15 +268,15 @@ export default function Concierge() {
       <button
         ref={buttonRef}
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close sales agent" : "Open sales agent"}
+        aria-label={open ? "Close Cloud9 sales rep" : "Open Cloud9 sales rep"}
         className="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 z-50 group"
       >
-        <span className="sr-only">Sales agent</span>
+        <span className="sr-only">Cloud9 sales rep</span>
         <span
           className={`absolute right-full mr-4 top-1/2 -translate-y-1/2 whitespace-nowrap font-serif italic text-[15px] text-ink transition-opacity duration-500
             ${open ? "opacity-0" : "opacity-0 group-hover:opacity-100"}`}
         >
-          Sales agent
+          Cloud9 sales rep
         </span>
 
         <span className="relative inline-flex h-14 w-14 items-center justify-center rounded-full bg-ink text-canvas shadow-[0_8px_30px_-8px_rgba(0,0,0,0.4)] transition-transform duration-500 group-hover:scale-[1.04] group-active:scale-[0.96]">
@@ -304,14 +304,14 @@ export default function Concierge() {
         <div
           className="fixed bottom-24 right-6 lg:bottom-28 lg:right-10 z-40 w-[calc(100vw-3rem)] sm:w-[420px] h-[min(640px,calc(100vh-9rem))] bg-canvas border border-hairline-strong shadow-[0_24px_60px_-20px_rgba(0,0,0,0.35)] flex flex-col animate-scale-in origin-bottom-right"
           role="dialog"
-          aria-label="Sales agent"
+          aria-label="Cloud9 sales rep"
         >
           {/* header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-hairline">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-accent" aria-hidden />
               <span className="font-serif italic text-[16px] text-ink">
-                Sales agent
+                Cloud9 sales rep
               </span>
             </div>
             <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-ink-muted">
@@ -330,7 +330,7 @@ export default function Concierge() {
                   className="font-serif italic text-[24px] leading-[1.25] text-ink animate-fade-up"
                   style={{ animationDelay: "120ms" }}
                 >
-                  What kind of land are you looking for?
+                  Which Pearls Residence plot size are you considering?
                 </p>
                 <div className="mt-2 flex flex-col gap-2">
                   <div
@@ -432,7 +432,7 @@ export default function Concierge() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={streaming}
-              placeholder="Tell me what you're looking for…"
+              placeholder="Ask about Pearls Residence..."
               className="flex-1 bg-transparent text-[14px] text-ink placeholder:text-ink-muted placeholder:italic placeholder:font-serif focus:outline-none disabled:opacity-50"
             />
             <button

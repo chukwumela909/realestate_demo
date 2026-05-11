@@ -16,7 +16,7 @@ const COPY: Record<
   },
   phone: {
     label: "Phone",
-    placeholder: "+1 555 0142",
+    placeholder: "0916 787 9100",
     type: "tel",
     autocomplete: "tel",
   },

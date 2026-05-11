@@ -53,7 +53,7 @@ export default function PropertyCardInline({
   if (!data) {
     return (
       <div className="my-3 px-3 py-2 border border-hairline bg-canvas text-[12px] font-mono text-ink-muted">
-        Couldn&apos;t load this land listing.
+        Couldn&apos;t load this plot option.
       </div>
     );
   }
