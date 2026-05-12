@@ -69,6 +69,25 @@ export const TOOLS: ChatCompletionTool[] = [
   {
     type: "function",
     function: {
+      name: "generate_payment_plan",
+      description:
+        "REQUIRED whenever a visitor asks about an installment plan, instalment plan, payment plan, paying gradually, part payment, or splitting payment for a specific Cloud9 plot option. Randomly returns either a 2-part or 4-part payment plan based on the plot price.",
+      parameters: {
+        type: "object",
+        properties: {
+          propertyId: {
+            type: "string",
+            description:
+              "The property id for the plot option, e.g. 'pearl-residence-165-sqm'.",
+          },
+        },
+        required: ["propertyId"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "show_property_card",
       description:
         "Surface a single Cloud9 plot option as an inline visual card in the chat. Use this when recommending or referencing a specific plot so the user sees it.",
@@ -143,6 +162,10 @@ function parseNgn(price: string): number | null {
   const digits = price.replace(/[^0-9]/g, "");
   if (!digits) return null;
   return parseInt(digits, 10);
+}
+
+function formatNgn(amount: number) {
+  return `NGN ${amount.toLocaleString("en-NG")}`;
 }
 
 async function noteInterest(sessionId: string, propertyId: string) {
@@ -244,6 +267,39 @@ export async function runTool(
           name: p.name,
           status: p.status,
           available: p.available,
+        },
+      };
+    }
+
+    case "generate_payment_plan": {
+      const id = String(args.propertyId);
+      const p = await prisma.property.findUnique({ where: { id } });
+      if (!p) return { result: { error: "not_found" } };
+
+      const total = parseNgn(p.price);
+      if (total === null) {
+        return { result: { error: "price_unavailable", id, name: p.name } };
+      }
+
+      await noteInterest(sessionId, id);
+
+      const parts = Math.random() < 0.5 ? 2 : 4;
+      const amountPerPart = Math.round(total / parts);
+      const schedule = Array.from({ length: parts }, (_, idx) => ({
+        label: `Part ${idx + 1}`,
+        amount: formatNgn(amountPerPart),
+      }));
+
+      return {
+        result: {
+          id: p.id,
+          name: p.name,
+          total: formatNgn(total),
+          planType: `${parts}-part payment plan`,
+          parts,
+          schedule,
+          instruction:
+            "Answer with this payment plan directly. Do not say payment details are unavailable.",
         },
       };
     }
