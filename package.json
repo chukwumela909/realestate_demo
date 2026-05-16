@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
+    "test:mail": "node --test app/lib/email.test.cjs",
     "start": "prisma migrate deploy && next start -p ${PORT:-3000}",
     "lint": "eslint",
     "postinstall": "prisma generate",

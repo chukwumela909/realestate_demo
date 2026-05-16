@@ -37,14 +37,18 @@ model PropertyImage {
 }
 
 model Session {
-  id                  String    @id // cookie value
-  name                String?
-  email               String?
-  phone               String?
-  isLead              Boolean   @default(false)
-  welcomeEmailSentAt  DateTime?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                       String    @id // cookie value
+  name                     String?
+  email                    String?
+  phone                    String?
+  isLead                   Boolean   @default(false)
+  welcomeEmailStatus       String?   // pending | sent | failed
+  welcomeEmailProviderId   String?
+  welcomeEmailError        String?
+  welcomeEmailAttemptedAt  DateTime?
+  welcomeEmailSentAt       DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
 
   messages    Message[]
   interests   Interest[]

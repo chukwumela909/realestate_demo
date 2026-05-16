@@ -27,16 +27,12 @@ export default async function ConversationDetail({
   const label =
     session.name || session.email || session.phone || `Anonymous · ${session.id.slice(2, 8)}`;
 
-  // Read welcomeEmailSentAt via raw query (field added in a recent migration).
-  const emailRow = await prisma.$queryRaw<
-    { welcomeEmailSentAt: Date | string | null }[]
-  >`SELECT welcomeEmailSentAt FROM Session WHERE id = ${id} LIMIT 1`;
-  const rawSentAt = emailRow[0]?.welcomeEmailSentAt ?? null;
-  const welcomeSentAt = rawSentAt
-    ? rawSentAt instanceof Date
-      ? rawSentAt
-      : new Date(rawSentAt)
-    : null;
+  const welcomeEmailStatus = session.welcomeEmailStatus as
+    | "pending"
+    | "sent"
+    | "failed"
+    | null;
+  const welcomeSentAt = session.welcomeEmailSentAt;
 
   return (
     <div className="grid grid-cols-12 min-h-screen">
@@ -179,13 +175,22 @@ export default async function ConversationDetail({
             </p>
           )}
 
-          {welcomeSentAt && (
+          {welcomeSentAt && !welcomeEmailStatus && (
             <div className="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-[12px] font-mono tracking-[0.06em] text-ink-muted">
               <span className="text-accent">✓</span>
               <span>Welcome email sent</span>
               <span className="text-hairline-strong">·</span>
               <span>{welcomeSentAt.toLocaleString()}</span>
             </div>
+          )}
+          {session.email && (welcomeEmailStatus || !welcomeSentAt) && (
+            <WelcomeEmailStatus
+              attemptedAt={session.welcomeEmailAttemptedAt}
+              error={session.welcomeEmailError}
+              providerId={session.welcomeEmailProviderId}
+              sentAt={session.welcomeEmailSentAt}
+              status={welcomeEmailStatus}
+            />
           )}
         </div>
 
@@ -215,4 +220,55 @@ export default async function ConversationDetail({
       </aside>
     </div>
   );
+}
+
+function WelcomeEmailStatus({
+  attemptedAt,
+  error,
+  providerId,
+  sentAt,
+  status,
+}: {
+  attemptedAt: Date | null;
+  error: string | null;
+  providerId: string | null;
+  sentAt: Date | null;
+  status: "pending" | "sent" | "failed" | null;
+}) {
+  const isFailed = status === "failed";
+  const isSent = status === "sent";
+
+  return (
+    <div className="mt-5 pt-4 border-t border-hairline text-[12px] font-mono tracking-[0.06em] text-ink-muted">
+      <div className="flex items-center gap-2">
+        <span
+          className={
+            isSent ? "text-accent" : isFailed ? "text-[#a6442c]" : "text-ink-muted"
+          }
+        >
+          {isSent ? "OK" : isFailed ? "ERR" : "..."}
+        </span>
+        <span>{formatWelcomeEmailStatus(status)}</span>
+      </div>
+      {attemptedAt && <div className="mt-2">Attempted {attemptedAt.toLocaleString()}</div>}
+      {sentAt && <div className="mt-1">Sent {sentAt.toLocaleString()}</div>}
+      {providerId && <div className="mt-1 break-all">Provider id {providerId}</div>}
+      {error && <div className="mt-2 break-words text-[#a6442c]">{error}</div>}
+    </div>
+  );
+}
+
+function formatWelcomeEmailStatus(
+  status: "pending" | "sent" | "failed" | null,
+) {
+  switch (status) {
+    case "pending":
+      return "Welcome email pending";
+    case "sent":
+      return "Welcome email sent";
+    case "failed":
+      return "Welcome email failed";
+    default:
+      return "Welcome email not sent";
+  }
 }

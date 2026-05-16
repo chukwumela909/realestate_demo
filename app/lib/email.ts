@@ -5,17 +5,41 @@ declare global {
   var resend: Resend | undefined;
 }
 
-function getResend(): Resend | null {
+type EmailClient = {
+  emails: {
+    send: (payload: {
+      from: string;
+      to: string;
+      subject: string;
+      html: string;
+      text: string;
+      replyTo: string;
+    }) => Promise<{
+      data?: { id?: string } | null;
+      error?: { message?: string } | null;
+    }>;
+  };
+};
+
+function getResend(): EmailClient | null {
   const key = process.env.RESEND_API_KEY;
   if (!key) return null;
   if (!global.resend) global.resend = new Resend(key);
   return global.resend;
 }
 
-const FROM =
-  process.env.CLOUD9_FROM_EMAIL ??
-  process.env.MAISON_FROM_EMAIL ??
-  "Cloud9 Properties Limited <onboarding@resend.dev>";
+const RESEND_TEST_FROM = "Cloud9 Properties Limited <onboarding@resend.dev>";
+
+function getConfiguredFrom(allowTestSender = false) {
+  const from = process.env.CLOUD9_FROM_EMAIL ?? process.env.MAISON_FROM_EMAIL;
+  if (from) return { ok: true as const, from };
+  if (allowTestSender) return { ok: true as const, from: RESEND_TEST_FROM };
+  return {
+    ok: false as const,
+    error:
+      "Missing CLOUD9_FROM_EMAIL. Configure a verified Resend sender before sending to customers.",
+  };
+}
 
 export type EmailProperty = {
   id: string;
@@ -27,14 +51,23 @@ export type EmailProperty = {
   primaryImage?: string;
 };
 
-export async function sendWelcomeEmail(opts: {
-  to: string;
-  name?: string | null;
-  properties: EmailProperty[];
-}): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
-  const resend = getResend();
+export async function sendWelcomeEmail(
+  opts: {
+    to: string;
+    name?: string | null;
+    properties: EmailProperty[];
+    allowTestSender?: boolean;
+  },
+  resendOverride?: EmailClient,
+): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const resend = resendOverride ?? getResend();
   if (!resend) {
     return { ok: false, error: "Missing RESEND_API_KEY" };
+  }
+
+  const sender = getConfiguredFrom(opts.allowTestSender);
+  if (!sender.ok) {
+    return { ok: false, error: sender.error };
   }
 
   const subject = "From Cloud9 Properties Limited - your Pearls Residence enquiry";
@@ -43,13 +76,16 @@ export async function sendWelcomeEmail(opts: {
 
   try {
     const res = await resend.emails.send({
-      from: FROM,
+      from: sender.from,
       to: opts.to,
       subject,
       html,
       text,
+      replyTo: CLOUD9_CONTACT.email,
     });
-    if (res.error) return { ok: false, error: res.error.message };
+    if (res.error) {
+      return { ok: false, error: res.error.message ?? "send failed" };
+    }
     if (!res.data?.id) return { ok: false, error: "no id returned" };
     return { ok: true, id: res.data.id };
   } catch (err) {

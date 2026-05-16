@@ -2,6 +2,8 @@ import type { ChatCompletionTool } from "openai/resources/chat/completions";
 import { prisma } from "./prisma";
 import { sendWelcomeEmail, type EmailProperty } from "./email";
 
+type WelcomeEmailStatus = "pending" | "sent" | "failed";
+
 // === tool schemas (OpenAI function-calling format) ===
 
 export const TOOLS: ChatCompletionTool[] = [
@@ -345,9 +347,9 @@ export async function runTool(
     }
 
     case "save_contact": {
-      const name = (args.name as string | undefined) ?? undefined;
-      const email = (args.email as string | undefined) ?? undefined;
-      const phone = (args.phone as string | undefined) ?? undefined;
+      const name = normalizeContact(args.name);
+      const email = normalizeContact(args.email);
+      const phone = normalizeContact(args.phone);
 
       const before = await prisma.session.findUnique({
         where: { id: sessionId },
@@ -364,15 +366,8 @@ export async function runTool(
         data,
       });
 
-      // Fire welcome email when an email is captured for the first time and we
-      // haven't sent one yet for this session. Fire-and-forget — don't block
-      // the chat reply on email delivery.
-      const isNewEmail = email && before?.email !== email;
-      const alreadySent =
-        (before as { welcomeEmailSentAt?: Date | null } | null)
-          ?.welcomeEmailSentAt ?? null;
-
-      if (isNewEmail && !alreadySent) {
+      // Fire-and-forget: the chat stays fast, while delivery status is recorded.
+      if (email && shouldAttemptWelcomeEmail(before, email)) {
         void deliverWelcome(sessionId, email, name ?? before?.name ?? null);
       }
 
@@ -389,6 +384,27 @@ export type InspectionDateOption = {
   label: string;
   window: string;
 };
+
+function normalizeContact(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function shouldAttemptWelcomeEmail(
+  before: {
+    email: string | null;
+    welcomeEmailStatus: string | null;
+    welcomeEmailSentAt: Date | null;
+  } | null,
+  email: string | undefined,
+) {
+  if (!email) return false;
+  if (!before) return true;
+  if (before.email !== email) return true;
+  if (before.welcomeEmailStatus === "failed") return true;
+  return !before.welcomeEmailStatus && !before.welcomeEmailSentAt;
+}
 
 function getAvailableInspectionDates(): InspectionDateOption[] {
   const dates: InspectionDateOption[] = [];
@@ -422,7 +438,14 @@ async function deliverWelcome(
   email: string,
   name: string | null,
 ) {
+  const attemptedAt = new Date();
+
   try {
+    await updateWelcomeEmailStatus(sessionId, "pending", {
+      attemptedAt,
+      clearSentAt: true,
+    });
+
     // Pull this session's top property interests for the email.
     const interests = await prisma.interest.findMany({
       where: { sessionId },
@@ -446,15 +469,49 @@ async function deliverWelcome(
     const result = await sendWelcomeEmail({ to: email, name, properties });
 
     if (result.ok) {
-      // Stamp via raw SQL because the field was added in a recent migration
-      // and the generated TS client may not yet expose it on this build.
-      await prisma.$executeRaw`UPDATE Session SET welcomeEmailSentAt = ${new Date()} WHERE id = ${sessionId}`;
+      await updateWelcomeEmailStatus(sessionId, "sent", {
+        providerId: result.id,
+        sentAt: new Date(),
+      });
       console.log(`[email] welcome sent to ${email} (id=${result.id})`);
     } else {
+      await updateWelcomeEmailStatus(sessionId, "failed", {
+        error: result.error,
+      });
       console.warn(`[email] welcome failed for ${email}: ${result.error}`);
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown";
+    await updateWelcomeEmailStatus(sessionId, "failed", { error: msg }).catch(
+      () => undefined,
+    );
     console.warn(`[email] deliverWelcome threw: ${msg}`);
   }
+}
+
+async function updateWelcomeEmailStatus(
+  sessionId: string,
+  status: WelcomeEmailStatus,
+  opts: {
+    attemptedAt?: Date;
+    providerId?: string;
+    error?: string;
+    sentAt?: Date;
+    clearSentAt?: boolean;
+  } = {},
+) {
+  await prisma.session.update({
+    where: { id: sessionId },
+    data: {
+      welcomeEmailStatus: status,
+      welcomeEmailAttemptedAt: opts.attemptedAt,
+      welcomeEmailProviderId: opts.providerId ?? null,
+      welcomeEmailError: opts.error ? truncateEmailError(opts.error) : null,
+      welcomeEmailSentAt: opts.clearSentAt ? null : opts.sentAt,
+    },
+  });
+}
+
+function truncateEmailError(error: string) {
+  return error.length <= 500 ? error : `${error.slice(0, 497)}...`;
 }
